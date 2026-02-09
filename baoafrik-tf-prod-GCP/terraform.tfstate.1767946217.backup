@@ -1,0 +1,1049 @@
+{
+  "version": 4,
+  "terraform_version": "1.13.3",
+  "serial": 125,
+  "lineage": "bb5ad415-60c1-76d6-a173-0a36dc78b7a2",
+  "outputs": {
+    "cloudsql_connection_name": {
+      "value": "baoafrik-prod1:europe-north2:baoafrik-prod-db",
+      "type": "string"
+    },
+    "dns_name_servers": {
+      "value": [
+        "ns-cloud-c1.googledomains.com.",
+        "ns-cloud-c2.googledomains.com.",
+        "ns-cloud-c3.googledomains.com.",
+        "ns-cloud-c4.googledomains.com."
+      ],
+      "type": [
+        "list",
+        "string"
+      ]
+    },
+    "prod_bucket_name": {
+      "value": "baoafrik-prod-uploads",
+      "type": "string"
+    },
+    "prod_instance_ip": {
+      "value": "34.51.195.222",
+      "type": "string"
+    },
+    "prod_url": {
+      "value": "https://baoafrik.com",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "module": "module.cloudsql",
+      "mode": "managed",
+      "type": "google_compute_global_address",
+      "name": "private_ip_address",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "address": "10.132.0.0",
+            "address_type": "INTERNAL",
+            "creation_timestamp": "2025-12-09T02:38:02.510-08:00",
+            "description": "",
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "id": "projects/baoafrik-prod1/global/addresses/baoafrik-prod-db-priv-ip",
+            "ip_version": "",
+            "label_fingerprint": "vezUS-42LLM=",
+            "labels": {},
+            "name": "baoafrik-prod-db-priv-ip",
+            "network": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/networks/baoafrik-prod-vpc",
+            "prefix_length": 16,
+            "project": "baoafrik-prod1",
+            "purpose": "VPC_PEERING",
+            "self_link": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/addresses/baoafrik-prod-db-priv-ip",
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.google_compute_network.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.cloudsql",
+      "mode": "managed",
+      "type": "google_project_service",
+      "name": "compute",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "baoafrik-prod1/compute.googleapis.com",
+            "project": "baoafrik-prod1",
+            "service": "compute.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0="
+        }
+      ]
+    },
+    {
+      "module": "module.cloudsql",
+      "mode": "managed",
+      "type": "google_project_service",
+      "name": "servicenetworking",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "baoafrik-prod1/servicenetworking.googleapis.com",
+            "project": "baoafrik-prod1",
+            "service": "servicenetworking.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0="
+        }
+      ]
+    },
+    {
+      "module": "module.cloudsql",
+      "mode": "managed",
+      "type": "google_project_service",
+      "name": "sqladmin",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "disable_dependent_services": null,
+            "disable_on_destroy": false,
+            "id": "baoafrik-prod1/sqladmin.googleapis.com",
+            "project": "baoafrik-prod1",
+            "service": "sqladmin.googleapis.com",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInJlYWQiOjYwMDAwMDAwMDAwMCwidXBkYXRlIjoxMjAwMDAwMDAwMDAwfX0="
+        }
+      ]
+    },
+    {
+      "module": "module.cloudsql",
+      "mode": "managed",
+      "type": "google_service_networking_connection",
+      "name": "private_vpc_connection",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "deletion_policy": null,
+            "id": "https%3A%2F%2Fwww.googleapis.com%2Fcompute%2Fv1%2Fprojects%2Fbaoafrik-prod1%2Fglobal%2Fnetworks%2Fbaoafrik-prod-vpc:servicenetworking.googleapis.com",
+            "network": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/networks/baoafrik-prod-vpc",
+            "peering": "servicenetworking-googleapis-com",
+            "reserved_peering_ranges": [
+              "baoafrik-prod-db-priv-ip"
+            ],
+            "service": "servicenetworking.googleapis.com",
+            "timeouts": null,
+            "update_on_creation_fail": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.cloudsql.google_compute_global_address.private_ip_address",
+            "module.cloudsql.google_project_service.servicenetworking",
+            "module.vpc.google_compute_network.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.cloudsql",
+      "mode": "managed",
+      "type": "google_sql_database",
+      "name": "app_db",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "charset": "UTF8",
+            "collation": "en_US.UTF8",
+            "deletion_policy": "DELETE",
+            "id": "projects/baoafrik-prod1/instances/baoafrik-prod-db/databases/baoafrik-prod-db",
+            "instance": "baoafrik-prod-db",
+            "name": "baoafrik-prod-db",
+            "project": "baoafrik-prod1",
+            "self_link": "https://sqladmin.googleapis.com/sql/v1beta4/projects/baoafrik-prod1/instances/baoafrik-prod-db/databases/baoafrik-prod-db",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.cloudsql.google_compute_global_address.private_ip_address",
+            "module.cloudsql.google_project_service.servicenetworking",
+            "module.cloudsql.google_service_networking_connection.private_vpc_connection",
+            "module.cloudsql.google_sql_database_instance.postgres",
+            "module.vpc.google_compute_network.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.cloudsql",
+      "mode": "managed",
+      "type": "google_sql_user",
+      "name": "app_user",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "deletion_policy": null,
+            "host": "",
+            "id": "bao_master//baoafrik-prod-db",
+            "instance": "baoafrik-prod-db",
+            "name": "bao_master",
+            "password": "Baoafrik-pass23",
+            "password_policy": [],
+            "password_wo": null,
+            "password_wo_version": null,
+            "project": "baoafrik-prod1",
+            "sql_server_user_details": [],
+            "timeouts": null,
+            "type": ""
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ]
+          ],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6NjAwMDAwMDAwMDAwLCJ1cGRhdGUiOjYwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.cloudsql.google_compute_global_address.private_ip_address",
+            "module.cloudsql.google_project_service.servicenetworking",
+            "module.cloudsql.google_service_networking_connection.private_vpc_connection",
+            "module.cloudsql.google_sql_database_instance.postgres",
+            "module.vpc.google_compute_network.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.compute_prod",
+      "mode": "managed",
+      "type": "google_compute_instance",
+      "name": "prod",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 6,
+          "attributes": {
+            "advanced_machine_features": [],
+            "allow_stopping_for_update": null,
+            "attached_disk": [],
+            "boot_disk": [
+              {
+                "auto_delete": true,
+                "device_name": "persistent-disk-0",
+                "disk_encryption_key_raw": "",
+                "disk_encryption_key_rsa": "",
+                "disk_encryption_key_sha256": "",
+                "disk_encryption_service_account": "",
+                "force_attach": false,
+                "guest_os_features": [
+                  "VIRTIO_SCSI_MULTIQUEUE",
+                  "SEV_CAPABLE",
+                  "SEV_SNP_CAPABLE",
+                  "SEV_LIVE_MIGRATABLE",
+                  "SEV_LIVE_MIGRATABLE_V2",
+                  "IDPF",
+                  "TDX_CAPABLE",
+                  "UEFI_COMPATIBLE",
+                  "GVNIC"
+                ],
+                "initialize_params": [
+                  {
+                    "architecture": "X86_64",
+                    "enable_confidential_compute": false,
+                    "image": "https://www.googleapis.com/compute/v1/projects/ubuntu-os-cloud/global/images/ubuntu-2204-jammy-v20251203",
+                    "labels": {},
+                    "provisioned_iops": 0,
+                    "provisioned_throughput": 0,
+                    "resource_manager_tags": {},
+                    "resource_policies": [],
+                    "size": 30,
+                    "snapshot": "",
+                    "source_image_encryption_key": [],
+                    "source_snapshot_encryption_key": [],
+                    "storage_pool": "",
+                    "type": "pd-balanced"
+                  }
+                ],
+                "interface": "",
+                "kms_key_self_link": "",
+                "mode": "READ_WRITE",
+                "source": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/zones/europe-north2-a/disks/baoafrik-prod-instance"
+              }
+            ],
+            "can_ip_forward": false,
+            "confidential_instance_config": [],
+            "cpu_platform": "AMD Rome",
+            "creation_timestamp": "2025-12-09T02:56:00.445-08:00",
+            "current_status": "RUNNING",
+            "deletion_protection": false,
+            "description": "",
+            "desired_status": null,
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "enable_display": false,
+            "guest_accelerator": [],
+            "hostname": "",
+            "id": "projects/baoafrik-prod1/zones/europe-north2-a/instances/baoafrik-prod-instance",
+            "instance_encryption_key": [],
+            "instance_id": "2920508963278929583",
+            "key_revocation_action_type": "",
+            "label_fingerprint": "vezUS-42LLM=",
+            "labels": {},
+            "machine_type": "e2-medium",
+            "metadata": {
+              "ssh-keys": "ashprincepageo:ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNI0Ejw/9NEFZmT2osNgp9ZVDv7UriTTbx4RGBRyJFbb2b87uNP9OzpVvsj7i/kaEOLi9h9UdNjaCVmSCkW99AA= google-ssh {\"userName\":\"ashprincepageo@gmail.com\",\"expireOn\":\"2025-12-12T08:06:31+0000\"}\nashprincepageo:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCOMKgkVled3fYEw/vFg88Ni78Zh/aTZ5cMlbcQNHcAq6SqG+SB7VWkmNqz1oc2Vl38R5Mie8EmCUJbEjmHAhQh+SG1B4AixGnxyHIKk+mnMeUb0vgOwNEBOoKsQMLGKdHiyiDAbE6YvlBGA58/7+IRbQx1jo2/7L0wsfPw1umnfGauAn5QY1WGOifnpUFQj+nzFpLqbgqpLKnf8jUk4QxJxS/bOf10pxPuYmsqjRcuhd3yABBmFsy+iWtTaKQy4eZGcfpNxiSBf3q0B86HEgOQEeBU6z1Ia3O06gI0FLjAVpPbcXW0R20M5gCLJAnnTupj8ck78kD/oz+Blbll6f4v google-ssh {\"userName\":\"ashprincepageo@gmail.com\",\"expireOn\":\"2025-12-12T08:06:35+0000\"}\njenkins-deploy:ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKGeyQswa0jDXIAgiTqepKlg17RNzhuiUsRMtWZN6mLG jenkins-deploy"
+            },
+            "metadata_fingerprint": "91AR8GEAvH8=",
+            "metadata_startup_script": null,
+            "min_cpu_platform": "",
+            "name": "baoafrik-prod-instance",
+            "network_interface": [
+              {
+                "access_config": [
+                  {
+                    "nat_ip": "34.51.195.222",
+                    "network_tier": "PREMIUM",
+                    "public_ptr_domain_name": ""
+                  }
+                ],
+                "alias_ip_range": [],
+                "internal_ipv6_prefix_length": 0,
+                "ipv6_access_config": [],
+                "ipv6_access_type": "",
+                "ipv6_address": "",
+                "name": "nic0",
+                "network": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/networks/baoafrik-prod-vpc",
+                "network_attachment": "",
+                "network_ip": "100.0.0.2",
+                "nic_type": "",
+                "queue_count": 0,
+                "stack_type": "IPV4_ONLY",
+                "subnetwork": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/regions/europe-north2/subnetworks/baoafrik-prod-vpc-public",
+                "subnetwork_project": "baoafrik-prod1"
+              }
+            ],
+            "network_performance_config": [],
+            "params": [],
+            "project": "baoafrik-prod1",
+            "reservation_affinity": [],
+            "resource_policies": [],
+            "scheduling": [
+              {
+                "automatic_restart": true,
+                "availability_domain": 0,
+                "instance_termination_action": "",
+                "local_ssd_recovery_timeout": [],
+                "max_run_duration": [],
+                "min_node_cpus": 0,
+                "node_affinities": [],
+                "on_host_maintenance": "MIGRATE",
+                "on_instance_stop_action": [],
+                "preemptible": false,
+                "provisioning_model": "STANDARD",
+                "termination_time": ""
+              }
+            ],
+            "scratch_disk": [],
+            "self_link": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/zones/europe-north2-a/instances/baoafrik-prod-instance",
+            "service_account": [
+              {
+                "email": "baoafrik-prod-app-sa@baoafrik-prod1.iam.gserviceaccount.com",
+                "scopes": [
+                  "https://www.googleapis.com/auth/cloud-platform"
+                ]
+              }
+            ],
+            "shielded_instance_config": [
+              {
+                "enable_integrity_monitoring": true,
+                "enable_secure_boot": false,
+                "enable_vtpm": true
+              }
+            ],
+            "tags": [],
+            "tags_fingerprint": "42WmSpB8rSM=",
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "timeouts": null,
+            "zone": "europe-north2-a"
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "boot_disk"
+              },
+              {
+                "type": "index",
+                "value": {
+                  "value": 0,
+                  "type": "number"
+                }
+              },
+              {
+                "type": "get_attr",
+                "value": "disk_encryption_key_raw"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "boot_disk"
+              },
+              {
+                "type": "index",
+                "value": {
+                  "value": 0,
+                  "type": "number"
+                }
+              },
+              {
+                "type": "get_attr",
+                "value": "disk_encryption_key_rsa"
+              }
+            ]
+          ],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiNiJ9",
+          "dependencies": [
+            "module.iam.google_service_account.app",
+            "module.vpc.google_compute_network.vpc",
+            "module.vpc.google_compute_subnetwork.public"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.dns",
+      "mode": "data",
+      "type": "google_dns_managed_zone",
+      "name": "prod",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "description": "Public DNS zone for baoafrik.com",
+            "dns_name": "baoafrik.com.",
+            "id": "projects/baoafrik-staging/managedZones/prod-zone",
+            "managed_zone_id": -1367762158,
+            "name": "prod-zone",
+            "name_servers": [
+              "ns-cloud-c1.googledomains.com.",
+              "ns-cloud-c2.googledomains.com.",
+              "ns-cloud-c3.googledomains.com.",
+              "ns-cloud-c4.googledomains.com."
+            ],
+            "project": "baoafrik-staging",
+            "visibility": "public"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "module": "module.dns",
+      "mode": "managed",
+      "type": "google_dns_record_set",
+      "name": "caa",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "projects/baoafrik-staging/managedZones/prod-zone/rrsets/baoafrik.com./CAA",
+            "managed_zone": "prod-zone",
+            "name": "baoafrik.com.",
+            "project": "baoafrik-staging",
+            "routing_policy": [],
+            "rrdatas": [
+              "0 issue \"letsencrypt.org\""
+            ],
+            "ttl": 300,
+            "type": "CAA"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.dns.data.google_dns_managed_zone.prod"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.dns",
+      "mode": "managed",
+      "type": "google_dns_record_set",
+      "name": "jenkins",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "projects/baoafrik-staging/managedZones/prod-zone/rrsets/jenkins.baoafrik.com./A",
+            "managed_zone": "prod-zone",
+            "name": "jenkins.baoafrik.com.",
+            "project": "baoafrik-staging",
+            "routing_policy": [],
+            "rrdatas": [
+              "34.51.195.222"
+            ],
+            "ttl": 300,
+            "type": "A"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.compute_prod.google_compute_instance.prod",
+            "module.dns.data.google_dns_managed_zone.prod",
+            "module.iam.google_service_account.app",
+            "module.vpc.google_compute_network.vpc",
+            "module.vpc.google_compute_subnetwork.public"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.dns",
+      "mode": "managed",
+      "type": "google_dns_record_set",
+      "name": "prod",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "projects/baoafrik-staging/managedZones/prod-zone/rrsets/baoafrik.com./A",
+            "managed_zone": "prod-zone",
+            "name": "baoafrik.com.",
+            "project": "baoafrik-staging",
+            "routing_policy": [],
+            "rrdatas": [
+              "34.51.195.222"
+            ],
+            "ttl": 300,
+            "type": "A"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.compute_prod.google_compute_instance.prod",
+            "module.dns.data.google_dns_managed_zone.prod",
+            "module.iam.google_service_account.app",
+            "module.vpc.google_compute_network.vpc",
+            "module.vpc.google_compute_subnetwork.public"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "google_project_iam_member",
+      "name": "app_storage",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "condition": [],
+            "etag": "BwZFgsDeI/g=",
+            "id": "baoafrik-prod/roles/storage.objectAdmin/serviceAccount:baoafrik-prod-app-sa@baoafrik-prod1.iam.gserviceaccount.com",
+            "member": "serviceAccount:baoafrik-prod-app-sa@baoafrik-prod1.iam.gserviceaccount.com",
+            "project": "baoafrik-prod",
+            "role": "roles/storage.objectAdmin"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.iam.google_service_account.app"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "google_service_account",
+      "name": "app",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "account_id": "baoafrik-prod-app-sa",
+            "create_ignore_already_exists": null,
+            "description": "",
+            "disabled": false,
+            "display_name": "baoafrik-prod app service account",
+            "email": "baoafrik-prod-app-sa@baoafrik-prod1.iam.gserviceaccount.com",
+            "id": "projects/baoafrik-prod1/serviceAccounts/baoafrik-prod-app-sa@baoafrik-prod1.iam.gserviceaccount.com",
+            "member": "serviceAccount:baoafrik-prod-app-sa@baoafrik-prod1.iam.gserviceaccount.com",
+            "name": "projects/baoafrik-prod1/serviceAccounts/baoafrik-prod-app-sa@baoafrik-prod1.iam.gserviceaccount.com",
+            "project": "baoafrik-prod1",
+            "timeouts": null,
+            "unique_id": "107739663207246724429"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDB9fQ=="
+        }
+      ]
+    },
+    {
+      "module": "module.storage",
+      "mode": "managed",
+      "type": "google_storage_bucket",
+      "name": "prod",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 4,
+          "attributes": {
+            "autoclass": [],
+            "cors": [
+              {
+                "max_age_seconds": 3000,
+                "method": [
+                  "GET",
+                  "PUT",
+                  "POST",
+                  "DELETE",
+                  "HEAD"
+                ],
+                "origin": [
+                  "https://baoafrik.com",
+                  "https://www.baoafrik.com"
+                ],
+                "response_header": [
+                  "ETag",
+                  "x-goog-request-id"
+                ]
+              }
+            ],
+            "custom_placement_config": [],
+            "default_event_based_hold": false,
+            "effective_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "enable_object_retention": false,
+            "encryption": [],
+            "force_destroy": true,
+            "hierarchical_namespace": [
+              {
+                "enabled": false
+              }
+            ],
+            "id": "baoafrik-prod-uploads",
+            "ip_filter": [],
+            "labels": {},
+            "lifecycle_rule": [],
+            "location": "EUROPE-NORTH2",
+            "logging": [],
+            "name": "baoafrik-prod-uploads",
+            "project": "baoafrik-prod1",
+            "project_number": 404582920,
+            "public_access_prevention": "inherited",
+            "requester_pays": false,
+            "retention_policy": [],
+            "rpo": null,
+            "self_link": "https://www.googleapis.com/storage/v1/b/baoafrik-prod-uploads",
+            "soft_delete_policy": [
+              {
+                "effective_time": "2025-12-09T10:55:25.915Z",
+                "retention_duration_seconds": 604800
+              }
+            ],
+            "storage_class": "STANDARD",
+            "terraform_labels": {
+              "goog-terraform-provisioned": "true"
+            },
+            "time_created": "2025-12-09T10:55:25.915Z",
+            "timeouts": null,
+            "uniform_bucket_level_access": false,
+            "updated": "2025-12-09T10:55:29.221Z",
+            "url": "gs://baoafrik-prod-uploads",
+            "versioning": [],
+            "website": []
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsInJlYWQiOjI0MDAwMDAwMDAwMCwidXBkYXRlIjoyNDAwMDAwMDAwMDB9LCJzY2hlbWFfdmVyc2lvbiI6IjQifQ=="
+        }
+      ]
+    },
+    {
+      "module": "module.storage",
+      "mode": "managed",
+      "type": "google_storage_bucket_iam_member",
+      "name": "prod_public_read",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "bucket": "b/baoafrik-prod-uploads",
+            "condition": [],
+            "etag": "CAI=",
+            "id": "b/baoafrik-prod-uploads/roles/storage.objectViewer/allUsers",
+            "member": "allUsers",
+            "role": "roles/storage.objectViewer",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwfX0=",
+          "dependencies": [
+            "module.storage.google_storage_bucket.prod"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "google_compute_firewall",
+      "name": "allow_db",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "allow": [
+              {
+                "ports": [
+                  "5432"
+                ],
+                "protocol": "tcp"
+              }
+            ],
+            "creation_timestamp": "2025-12-11T08:33:30.852-08:00",
+            "deny": [],
+            "description": "",
+            "destination_ranges": [],
+            "direction": "INGRESS",
+            "disabled": false,
+            "enable_logging": null,
+            "id": "projects/baoafrik-prod1/global/firewalls/baoafrik-prod-vpc-allow-db",
+            "log_config": [],
+            "name": "baoafrik-prod-vpc-allow-db",
+            "network": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/networks/baoafrik-prod-vpc",
+            "params": [],
+            "priority": 1000,
+            "project": "baoafrik-prod1",
+            "self_link": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/firewalls/baoafrik-prod-vpc-allow-db",
+            "source_ranges": [
+              "100.0.1.0/24"
+            ],
+            "source_service_accounts": [],
+            "source_tags": [],
+            "target_service_accounts": [],
+            "target_tags": [
+              "cloud-sql"
+            ],
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.google_compute_network.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "google_compute_firewall",
+      "name": "allow_egress",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "allow": [
+              {
+                "ports": [],
+                "protocol": "all"
+              }
+            ],
+            "creation_timestamp": "2025-12-11T08:33:30.363-08:00",
+            "deny": [],
+            "description": "",
+            "destination_ranges": [
+              "0.0.0.0/0"
+            ],
+            "direction": "EGRESS",
+            "disabled": false,
+            "enable_logging": null,
+            "id": "projects/baoafrik-prod1/global/firewalls/baoafrik-prod-vpc-allow-egress",
+            "log_config": [],
+            "name": "baoafrik-prod-vpc-allow-egress",
+            "network": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/networks/baoafrik-prod-vpc",
+            "params": [],
+            "priority": 1000,
+            "project": "baoafrik-prod1",
+            "self_link": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/firewalls/baoafrik-prod-vpc-allow-egress",
+            "source_ranges": [],
+            "source_service_accounts": [],
+            "source_tags": [],
+            "target_service_accounts": [],
+            "target_tags": [
+              "allow-egress"
+            ],
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.google_compute_network.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "google_compute_firewall",
+      "name": "allow_web",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "allow": [
+              {
+                "ports": [
+                  "22",
+                  "80",
+                  "443",
+                  "8080",
+                  "3000",
+                  "3001"
+                ],
+                "protocol": "tcp"
+              }
+            ],
+            "creation_timestamp": "2025-12-09T02:55:24.818-08:00",
+            "deny": [],
+            "description": "",
+            "destination_ranges": [],
+            "direction": "INGRESS",
+            "disabled": false,
+            "enable_logging": null,
+            "id": "projects/baoafrik-prod1/global/firewalls/baoafrik-prod-vpc-allow-web",
+            "log_config": [],
+            "name": "baoafrik-prod-vpc-allow-web",
+            "network": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/networks/baoafrik-prod-vpc",
+            "params": [],
+            "priority": 1000,
+            "project": "baoafrik-prod1",
+            "self_link": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/firewalls/baoafrik-prod-vpc-allow-web",
+            "source_ranges": [
+              "0.0.0.0/0"
+            ],
+            "source_service_accounts": [],
+            "source_tags": [],
+            "target_service_accounts": [],
+            "target_tags": [],
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.google_compute_network.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "google_compute_network",
+      "name": "vpc",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "auto_create_subnetworks": false,
+            "bgp_always_compare_med": false,
+            "bgp_best_path_selection_mode": "LEGACY",
+            "bgp_inter_region_cost": "",
+            "delete_default_routes_on_create": false,
+            "description": "",
+            "enable_ula_internal_ipv6": false,
+            "gateway_ipv4": "",
+            "id": "projects/baoafrik-prod1/global/networks/baoafrik-prod-vpc",
+            "internal_ipv6_range": "",
+            "mtu": 0,
+            "name": "baoafrik-prod-vpc",
+            "network_firewall_policy_enforcement_order": "AFTER_CLASSIC_FIREWALL",
+            "network_id": "6808510477142476061",
+            "network_profile": "",
+            "numeric_id": "6808510477142476061",
+            "params": [],
+            "project": "baoafrik-prod1",
+            "routing_mode": "REGIONAL",
+            "self_link": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/networks/baoafrik-prod-vpc",
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19"
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "google_compute_subnetwork",
+      "name": "private",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "creation_timestamp": "2025-12-09T02:55:25.273-08:00",
+            "description": "",
+            "external_ipv6_prefix": "",
+            "fingerprint": null,
+            "gateway_address": "100.0.1.1",
+            "id": "projects/baoafrik-prod1/regions/europe-north2/subnetworks/baoafrik-prod-vpc-private",
+            "internal_ipv6_prefix": "",
+            "ip_cidr_range": "100.0.1.0/24",
+            "ip_collection": null,
+            "ipv6_access_type": "",
+            "ipv6_cidr_range": "",
+            "ipv6_gce_endpoint": "",
+            "log_config": [],
+            "name": "baoafrik-prod-vpc-private",
+            "network": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/networks/baoafrik-prod-vpc",
+            "params": [],
+            "private_ip_google_access": true,
+            "private_ipv6_google_access": "DISABLE_GOOGLE_ACCESS",
+            "project": "baoafrik-prod1",
+            "purpose": "PRIVATE",
+            "region": "europe-north2",
+            "reserved_internal_range": "",
+            "role": "",
+            "secondary_ip_range": [],
+            "self_link": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/regions/europe-north2/subnetworks/baoafrik-prod-vpc-private",
+            "send_secondary_ip_range_if_empty": null,
+            "stack_type": "IPV4_ONLY",
+            "state": "",
+            "subnetwork_id": -1214923022,
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.google_compute_network.vpc"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "google_compute_subnetwork",
+      "name": "public",
+      "provider": "provider[\"registry.terraform.io/hashicorp/google\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "creation_timestamp": "2025-12-09T02:55:25.355-08:00",
+            "description": "",
+            "external_ipv6_prefix": "",
+            "fingerprint": null,
+            "gateway_address": "100.0.0.1",
+            "id": "projects/baoafrik-prod1/regions/europe-north2/subnetworks/baoafrik-prod-vpc-public",
+            "internal_ipv6_prefix": "",
+            "ip_cidr_range": "100.0.0.0/24",
+            "ip_collection": null,
+            "ipv6_access_type": "",
+            "ipv6_cidr_range": "",
+            "ipv6_gce_endpoint": "",
+            "log_config": [],
+            "name": "baoafrik-prod-vpc-public",
+            "network": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/global/networks/baoafrik-prod-vpc",
+            "params": [],
+            "private_ip_google_access": false,
+            "private_ipv6_google_access": "DISABLE_GOOGLE_ACCESS",
+            "project": "baoafrik-prod1",
+            "purpose": "PRIVATE",
+            "region": "europe-north2",
+            "reserved_internal_range": "",
+            "role": "",
+            "secondary_ip_range": [],
+            "self_link": "https://www.googleapis.com/compute/v1/projects/baoafrik-prod1/regions/europe-north2/subnetworks/baoafrik-prod-vpc-public",
+            "send_secondary_ip_range_if_empty": null,
+            "stack_type": "IPV4_ONLY",
+            "state": "",
+            "subnetwork_id": -1214923022,
+            "timeouts": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.google_compute_network.vpc"
+          ]
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}

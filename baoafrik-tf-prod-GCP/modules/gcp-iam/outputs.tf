@@ -1,0 +1,3 @@
+output "app_service_account_email" {
+  value = google_service_account.app.email
+}

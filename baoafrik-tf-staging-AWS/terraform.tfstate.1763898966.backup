@@ -1,0 +1,1533 @@
+{
+  "version": 4,
+  "terraform_version": "1.13.3",
+  "serial": 868,
+  "lineage": "ee20d8d8-457a-252b-b110-f6815ab352d2",
+  "outputs": {
+    "route53_zone_id": {
+      "value": "Z00954863T4EC4UQMOUK5",
+      "type": "string"
+    },
+    "staging_url": {
+      "value": "https://staging.baoafrik.com",
+      "type": "string"
+    }
+  },
+  "resources": [
+    {
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "latest_ubuntu",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allow_unsafe_filter": null,
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-east-1::image/ami-03deb8c961063af8c",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-0857ccdc177548e96",
+                  "throughput": "0",
+                  "volume_initialization_rate": "0",
+                  "volume_size": "8",
+                  "volume_type": "gp2"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              },
+              {
+                "device_name": "/dev/sdb",
+                "ebs": {},
+                "no_device": "",
+                "virtual_name": "ephemeral0"
+              },
+              {
+                "device_name": "/dev/sdc",
+                "ebs": {},
+                "no_device": "",
+                "virtual_name": "ephemeral1"
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2025-11-22T06:49:32.000Z",
+            "deprecation_time": "2027-11-22T06:49:32.000Z",
+            "description": "Canonical, Ubuntu, 22.04, amd64 jammy image",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "name",
+                "values": [
+                  "ubuntu/images/hvm-ssd/ubuntu-*-amd64-server-*"
+                ]
+              },
+              {
+                "name": "virtualization-type",
+                "values": [
+                  "hvm"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-03deb8c961063af8c",
+            "image_id": "ami-03deb8c961063af8c",
+            "image_location": "amazon/ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20251122",
+            "image_owner_alias": "amazon",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "last_launched_time": "",
+            "most_recent": true,
+            "name": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20251122",
+            "name_regex": null,
+            "owner_id": "099720109477",
+            "owners": [
+              "099720109477"
+            ],
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [],
+            "public": true,
+            "ramdisk_id": "",
+            "region": "us-east-1",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-0857ccdc177548e96",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "uefi_data": null,
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "mode": "data",
+      "type": "aws_route53_zone",
+      "name": "baoafrik",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:route53:::hostedzone/Z00954863T4EC4UQMOUK5",
+            "caller_reference": "41151c8d-d82f-47c9-957b-f414f8cb2f27",
+            "comment": "Hosting the Bao'Afrik project",
+            "id": "Z00954863T4EC4UQMOUK5",
+            "linked_service_description": null,
+            "linked_service_principal": null,
+            "name": "baoafrik.com",
+            "name_servers": [
+              "ns-262.awsdns-32.com",
+              "ns-811.awsdns-37.net",
+              "ns-1315.awsdns-36.org",
+              "ns-1835.awsdns-37.co.uk"
+            ],
+            "primary_name_server": "ns-262.awsdns-32.com",
+            "private_zone": false,
+            "resource_record_set_count": 14,
+            "tags": {},
+            "vpc_id": null,
+            "zone_id": "Z00954863T4EC4UQMOUK5"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "module": "module.bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "dev_bucket",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "acceleration_status": "",
+            "acl": null,
+            "arn": "arn:aws:s3:::baoafrik-dev-uploads",
+            "bucket": "baoafrik-dev-uploads",
+            "bucket_domain_name": "baoafrik-dev-uploads.s3.amazonaws.com",
+            "bucket_prefix": "",
+            "bucket_region": "us-east-1",
+            "bucket_regional_domain_name": "baoafrik-dev-uploads.s3.us-east-1.amazonaws.com",
+            "cors_rule": [
+              {
+                "allowed_headers": [
+                  "*"
+                ],
+                "allowed_methods": [
+                  "POST",
+                  "GET",
+                  "HEAD",
+                  "PUT",
+                  "DELETE"
+                ],
+                "allowed_origins": [
+                  "http://localhost:3001",
+                  "http://localhost:3000"
+                ],
+                "expose_headers": [
+                  "ETag",
+                  "x-amz-request-id"
+                ],
+                "max_age_seconds": 3000
+              }
+            ],
+            "force_destroy": false,
+            "grant": [
+              {
+                "id": "a062632c839202f9dadd62ed691ff2b57b526aa1baa41c6c6c8cffeaf2ec4c9e",
+                "permissions": [
+                  "FULL_CONTROL"
+                ],
+                "type": "CanonicalUser",
+                "uri": ""
+              }
+            ],
+            "hosted_zone_id": "Z3AQBSTGFYJSTF",
+            "id": "baoafrik-dev-uploads",
+            "lifecycle_rule": [],
+            "logging": [],
+            "object_lock_configuration": [],
+            "object_lock_enabled": false,
+            "policy": "{\"Statement\":[{\"Action\":[\"s3:GetObject\",\"s3:GetObjectVersion\",\"s3:PutObject\",\"s3:PutObjectAcl\",\"s3:DeleteObject\"],\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"arn:aws:s3:::baoafrik-dev-uploads/*\",\"Sid\":\"AllowAll\"}],\"Version\":\"2012-10-17\"}",
+            "region": "us-east-1",
+            "replication_configuration": [],
+            "request_payer": "BucketOwner",
+            "server_side_encryption_configuration": [
+              {
+                "rule": [
+                  {
+                    "apply_server_side_encryption_by_default": [
+                      {
+                        "kms_master_key_id": "",
+                        "sse_algorithm": "AES256"
+                      }
+                    ],
+                    "bucket_key_enabled": false
+                  }
+                ]
+              }
+            ],
+            "tags": {
+              "Name": "baoafrik-dev-uploads"
+            },
+            "tags_all": {
+              "Name": "baoafrik-dev-uploads"
+            },
+            "timeouts": null,
+            "versioning": [
+              {
+                "enabled": false,
+                "mfa_delete": false
+              }
+            ],
+            "website": [],
+            "website_domain": null,
+            "website_endpoint": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "bucket": "baoafrik-dev-uploads",
+            "region": "us-east-1"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInJlYWQiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19"
+        }
+      ]
+    },
+    {
+      "module": "module.bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket",
+      "name": "staging_bucket",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "acceleration_status": "",
+            "acl": null,
+            "arn": "arn:aws:s3:::baoafrik-staging-uploads",
+            "bucket": "baoafrik-staging-uploads",
+            "bucket_domain_name": "baoafrik-staging-uploads.s3.amazonaws.com",
+            "bucket_prefix": "",
+            "bucket_region": "us-east-1",
+            "bucket_regional_domain_name": "baoafrik-staging-uploads.s3.us-east-1.amazonaws.com",
+            "cors_rule": [
+              {
+                "allowed_headers": [
+                  "*"
+                ],
+                "allowed_methods": [
+                  "POST",
+                  "GET",
+                  "HEAD",
+                  "PUT",
+                  "DELETE"
+                ],
+                "allowed_origins": [
+                  "https://www.staging.baoafrik.com",
+                  "https://staging.baoafrik.com"
+                ],
+                "expose_headers": [
+                  "ETag",
+                  "x-amz-request-id"
+                ],
+                "max_age_seconds": 3000
+              }
+            ],
+            "force_destroy": false,
+            "grant": [
+              {
+                "id": "a062632c839202f9dadd62ed691ff2b57b526aa1baa41c6c6c8cffeaf2ec4c9e",
+                "permissions": [
+                  "FULL_CONTROL"
+                ],
+                "type": "CanonicalUser",
+                "uri": ""
+              }
+            ],
+            "hosted_zone_id": "Z3AQBSTGFYJSTF",
+            "id": "baoafrik-staging-uploads",
+            "lifecycle_rule": [],
+            "logging": [],
+            "object_lock_configuration": [],
+            "object_lock_enabled": false,
+            "policy": "{\"Statement\":[{\"Action\":\"s3:GetObject\",\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"arn:aws:s3:::baoafrik-staging-uploads/*\",\"Sid\":\"AllowPublicRead\"},{\"Action\":[\"s3:PutObject\",\"s3:PutObjectAcl\",\"s3:DeleteObject\"],\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"arn:aws:s3:::baoafrik-staging-uploads/*\",\"Sid\":\"AllowUploads\"}],\"Version\":\"2012-10-17\"}",
+            "region": "us-east-1",
+            "replication_configuration": [],
+            "request_payer": "BucketOwner",
+            "server_side_encryption_configuration": [
+              {
+                "rule": [
+                  {
+                    "apply_server_side_encryption_by_default": [
+                      {
+                        "kms_master_key_id": "",
+                        "sse_algorithm": "AES256"
+                      }
+                    ],
+                    "bucket_key_enabled": false
+                  }
+                ]
+              }
+            ],
+            "tags": {
+              "Name": "baoafrik-staging-uploads"
+            },
+            "tags_all": {
+              "Name": "baoafrik-staging-uploads"
+            },
+            "timeouts": null,
+            "versioning": [
+              {
+                "enabled": false,
+                "mfa_delete": false
+              }
+            ],
+            "website": [],
+            "website_domain": null,
+            "website_endpoint": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "bucket": "baoafrik-staging-uploads",
+            "region": "us-east-1"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInJlYWQiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19"
+        }
+      ]
+    },
+    {
+      "module": "module.bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_cors_configuration",
+      "name": "dev_uploads",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "bucket": "baoafrik-dev-uploads",
+            "cors_rule": [
+              {
+                "allowed_headers": [
+                  "*"
+                ],
+                "allowed_methods": [
+                  "DELETE",
+                  "GET",
+                  "HEAD",
+                  "POST",
+                  "PUT"
+                ],
+                "allowed_origins": [
+                  "http://localhost:3000",
+                  "http://localhost:3001"
+                ],
+                "expose_headers": [
+                  "ETag",
+                  "x-amz-request-id"
+                ],
+                "id": "",
+                "max_age_seconds": 3000
+              }
+            ],
+            "expected_bucket_owner": "",
+            "id": "baoafrik-dev-uploads",
+            "region": "us-east-1"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "bucket": "baoafrik-dev-uploads",
+            "expected_bucket_owner": null,
+            "region": "us-east-1"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.bucket.aws_s3_bucket.dev_bucket"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_cors_configuration",
+      "name": "staging_uploads",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "bucket": "baoafrik-staging-uploads",
+            "cors_rule": [
+              {
+                "allowed_headers": [
+                  "*"
+                ],
+                "allowed_methods": [
+                  "DELETE",
+                  "GET",
+                  "HEAD",
+                  "POST",
+                  "PUT"
+                ],
+                "allowed_origins": [
+                  "https://staging.baoafrik.com",
+                  "https://www.staging.baoafrik.com"
+                ],
+                "expose_headers": [
+                  "ETag",
+                  "x-amz-request-id"
+                ],
+                "id": "",
+                "max_age_seconds": 3000
+              }
+            ],
+            "expected_bucket_owner": "",
+            "id": "baoafrik-staging-uploads",
+            "region": "us-east-1"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "bucket": "baoafrik-staging-uploads",
+            "expected_bucket_owner": null,
+            "region": "us-east-1"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.bucket.aws_s3_bucket.staging_bucket"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_policy",
+      "name": "dev_bucket_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "bucket": "baoafrik-dev-uploads",
+            "id": "baoafrik-dev-uploads",
+            "policy": "{\"Statement\":[{\"Action\":[\"s3:GetObject\",\"s3:GetObjectVersion\",\"s3:PutObject\",\"s3:PutObjectAcl\",\"s3:DeleteObject\"],\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"arn:aws:s3:::baoafrik-dev-uploads/*\",\"Sid\":\"AllowAll\"}],\"Version\":\"2012-10-17\"}",
+            "region": "us-east-1"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "bucket": "baoafrik-dev-uploads",
+            "region": "us-east-1"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.bucket.aws_s3_bucket.dev_bucket"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_policy",
+      "name": "staging_bucket_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "bucket": "baoafrik-staging-uploads",
+            "id": "baoafrik-staging-uploads",
+            "policy": "{\"Statement\":[{\"Action\":[\"s3:GetObject\"],\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"arn:aws:s3:::baoafrik-staging-uploads/*\",\"Sid\":\"AllowPublicRead\"},{\"Action\":[\"s3:PutObject\",\"s3:PutObjectAcl\",\"s3:DeleteObject\"],\"Effect\":\"Allow\",\"Principal\":\"*\",\"Resource\":\"arn:aws:s3:::baoafrik-staging-uploads/*\",\"Sid\":\"AllowUploads\"}],\"Version\":\"2012-10-17\"}",
+            "region": "us-east-1"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "bucket": "baoafrik-staging-uploads",
+            "region": "us-east-1"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.bucket.aws_s3_bucket.staging_bucket",
+            "module.bucket.aws_s3_bucket_public_access_block.staging_public_access"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "dev_public_access",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "block_public_acls": false,
+            "block_public_policy": false,
+            "bucket": "baoafrik-dev-uploads",
+            "id": "baoafrik-dev-uploads",
+            "ignore_public_acls": false,
+            "region": "us-east-1",
+            "restrict_public_buckets": false,
+            "skip_destroy": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "bucket": "baoafrik-dev-uploads",
+            "region": "us-east-1"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.bucket.aws_s3_bucket.dev_bucket"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.bucket",
+      "mode": "managed",
+      "type": "aws_s3_bucket_public_access_block",
+      "name": "staging_public_access",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "block_public_acls": false,
+            "block_public_policy": false,
+            "bucket": "baoafrik-staging-uploads",
+            "id": "baoafrik-staging-uploads",
+            "ignore_public_acls": false,
+            "region": "us-east-1",
+            "restrict_public_buckets": false,
+            "skip_destroy": null
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "bucket": "baoafrik-staging-uploads",
+            "region": "us-east-1"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.bucket.aws_s3_bucket.staging_bucket"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.ec2_staging",
+      "mode": "data",
+      "type": "aws_ami",
+      "name": "latest_ubuntu",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "allow_unsafe_filter": null,
+            "architecture": "x86_64",
+            "arn": "arn:aws:ec2:us-east-1::image/ami-03deb8c961063af8c",
+            "block_device_mappings": [
+              {
+                "device_name": "/dev/sda1",
+                "ebs": {
+                  "delete_on_termination": "true",
+                  "encrypted": "false",
+                  "iops": "0",
+                  "snapshot_id": "snap-0857ccdc177548e96",
+                  "throughput": "0",
+                  "volume_initialization_rate": "0",
+                  "volume_size": "8",
+                  "volume_type": "gp2"
+                },
+                "no_device": "",
+                "virtual_name": ""
+              },
+              {
+                "device_name": "/dev/sdb",
+                "ebs": {},
+                "no_device": "",
+                "virtual_name": "ephemeral0"
+              },
+              {
+                "device_name": "/dev/sdc",
+                "ebs": {},
+                "no_device": "",
+                "virtual_name": "ephemeral1"
+              }
+            ],
+            "boot_mode": "uefi-preferred",
+            "creation_date": "2025-11-22T06:49:32.000Z",
+            "deprecation_time": "2027-11-22T06:49:32.000Z",
+            "description": "Canonical, Ubuntu, 22.04, amd64 jammy image",
+            "ena_support": true,
+            "executable_users": null,
+            "filter": [
+              {
+                "name": "name",
+                "values": [
+                  "ubuntu/images/hvm-ssd/ubuntu-*-amd64-server-*"
+                ]
+              },
+              {
+                "name": "virtualization-type",
+                "values": [
+                  "hvm"
+                ]
+              }
+            ],
+            "hypervisor": "xen",
+            "id": "ami-03deb8c961063af8c",
+            "image_id": "ami-03deb8c961063af8c",
+            "image_location": "amazon/ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20251122",
+            "image_owner_alias": "amazon",
+            "image_type": "machine",
+            "imds_support": "",
+            "include_deprecated": false,
+            "kernel_id": "",
+            "last_launched_time": "",
+            "most_recent": true,
+            "name": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20251122",
+            "name_regex": null,
+            "owner_id": "099720109477",
+            "owners": [
+              "099720109477"
+            ],
+            "platform": "",
+            "platform_details": "Linux/UNIX",
+            "product_codes": [],
+            "public": true,
+            "ramdisk_id": "",
+            "region": "us-east-1",
+            "root_device_name": "/dev/sda1",
+            "root_device_type": "ebs",
+            "root_snapshot_id": "snap-0857ccdc177548e96",
+            "sriov_net_support": "simple",
+            "state": "available",
+            "state_reason": {
+              "code": "UNSET",
+              "message": "UNSET"
+            },
+            "tags": {},
+            "timeouts": null,
+            "tpm_support": "",
+            "uefi_data": null,
+            "usage_operation": "RunInstances",
+            "virtualization_type": "hvm"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "data",
+      "type": "aws_caller_identity",
+      "name": "current",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "account_id": "522814722996",
+            "arn": "arn:aws:iam::522814722996:user/fonsah-bao",
+            "id": "522814722996",
+            "user_id": "AIDAXTORPSO2HWFKL3G7Q"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_instance_profile",
+      "name": "server_instance_profile",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::522814722996:instance-profile/baoafrik-server-instance-profile",
+            "create_date": "2025-11-07T17:56:17Z",
+            "id": "baoafrik-server-instance-profile",
+            "name": "baoafrik-server-instance-profile",
+            "name_prefix": "",
+            "path": "/",
+            "role": "baoafrik-server-role",
+            "tags": {},
+            "tags_all": {},
+            "unique_id": "AIPAXTORPSO2JIGXUIFT4"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.iam.aws_iam_role.server_role"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "backend_s3_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::522814722996:policy/baoafrik-backend-policy",
+            "attachment_count": 1,
+            "description": "Allow backend to interact with S3 bucket, generate pre-signed S3 URLs, upload, view and delete objects",
+            "id": "arn:aws:iam::522814722996:policy/baoafrik-backend-policy",
+            "name": "baoafrik-backend-policy",
+            "name_prefix": "",
+            "path": "/",
+            "policy": "{\"Statement\":[{\"Action\":[\"s3:PutObject\",\"s3:GetObject\",\"s3:DeleteObject\",\"s3:ListBucket\"],\"Effect\":\"Allow\",\"Resource\":[\"arn:aws:s3:::baoafrik-staging-uploads\",\"arn:aws:s3:::baoafrik-staging-uploads/*\",\"arn:aws:s3:::baoafrik-dev-uploads\",\"arn:aws:s3:::baoafrik-dev-uploads/*\"]}],\"Version\":\"2012-10-17\"}",
+            "policy_id": "ANPAXTORPSO2K6PNM3M2T",
+            "tags": {},
+            "tags_all": {}
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "arn": "arn:aws:iam::522814722996:policy/baoafrik-backend-policy"
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_policy",
+      "name": "jenkins_policy",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::522814722996:policy/baoafrik-jenkins-policy",
+            "attachment_count": 1,
+            "description": "Minimum permissions for Jenkins to deploy BaoAfrik apps",
+            "id": "arn:aws:iam::522814722996:policy/baoafrik-jenkins-policy",
+            "name": "baoafrik-jenkins-policy",
+            "name_prefix": "",
+            "path": "/",
+            "policy": "{\"Statement\":[{\"Action\":[\"ec2:DescribeInstances\",\"ec2:DescribeTags\"],\"Effect\":\"Allow\",\"Resource\":\"*\"}],\"Version\":\"2012-10-17\"}",
+            "policy_id": "ANPAXTORPSO2G5CKRUS35",
+            "tags": {},
+            "tags_all": {}
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "arn": "arn:aws:iam::522814722996:policy/baoafrik-jenkins-policy"
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_role",
+      "name": "server_role",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:iam::522814722996:role/baoafrik-server-role",
+            "assume_role_policy": "{\"Statement\":[{\"Action\":\"sts:AssumeRole\",\"Effect\":\"Allow\",\"Principal\":{\"Service\":\"ec2.amazonaws.com\"}}],\"Version\":\"2012-10-17\"}",
+            "create_date": "2025-11-07T17:56:15Z",
+            "description": "",
+            "force_detach_policies": false,
+            "id": "baoafrik-server-role",
+            "inline_policy": [],
+            "managed_policy_arns": [
+              "arn:aws:iam::522814722996:policy/baoafrik-backend-policy",
+              "arn:aws:iam::522814722996:policy/baoafrik-jenkins-policy"
+            ],
+            "max_session_duration": 3600,
+            "name": "baoafrik-server-role",
+            "name_prefix": "",
+            "path": "/",
+            "permissions_boundary": "",
+            "tags": {},
+            "tags_all": {},
+            "unique_id": "AROAXTORPSO2F3B3X2RO4"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "name": "baoafrik-server-role"
+          },
+          "private": "bnVsbA=="
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "backend_s3_attach",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "baoafrik-server-role/arn:aws:iam::522814722996:policy/baoafrik-backend-policy",
+            "policy_arn": "arn:aws:iam::522814722996:policy/baoafrik-backend-policy",
+            "role": "baoafrik-server-role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "policy_arn": "arn:aws:iam::522814722996:policy/baoafrik-backend-policy",
+            "role": "baoafrik-server-role"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.iam.aws_iam_policy.backend_s3_policy",
+            "module.iam.aws_iam_role.server_role"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.iam",
+      "mode": "managed",
+      "type": "aws_iam_role_policy_attachment",
+      "name": "jenkins_attach",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "id": "baoafrik-server-role/arn:aws:iam::522814722996:policy/baoafrik-jenkins-policy",
+            "policy_arn": "arn:aws:iam::522814722996:policy/baoafrik-jenkins-policy",
+            "role": "baoafrik-server-role"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "policy_arn": "arn:aws:iam::522814722996:policy/baoafrik-jenkins-policy",
+            "role": "baoafrik-server-role"
+          },
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.iam.aws_iam_policy.jenkins_policy",
+            "module.iam.aws_iam_role.server_role"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.rds_staging",
+      "mode": "managed",
+      "type": "aws_db_instance",
+      "name": "postgres",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 2,
+          "attributes": {
+            "address": "baoafrik-staging.cuheqogao4f2.us-east-1.rds.amazonaws.com",
+            "allocated_storage": 40,
+            "allow_major_version_upgrade": null,
+            "apply_immediately": false,
+            "arn": "arn:aws:rds:us-east-1:522814722996:db:baoafrik-staging",
+            "auto_minor_version_upgrade": true,
+            "availability_zone": "us-east-1b",
+            "backup_retention_period": 0,
+            "backup_target": "region",
+            "backup_window": "05:51-06:21",
+            "blue_green_update": [],
+            "ca_cert_identifier": "rds-ca-rsa2048-g1",
+            "character_set_name": "",
+            "copy_tags_to_snapshot": false,
+            "custom_iam_instance_profile": "",
+            "customer_owned_ip_enabled": false,
+            "database_insights_mode": "standard",
+            "db_name": "",
+            "db_subnet_group_name": "baoafrik-staging-db-subnet-group",
+            "dedicated_log_volume": false,
+            "delete_automated_backups": true,
+            "deletion_protection": false,
+            "domain": "",
+            "domain_auth_secret_arn": "",
+            "domain_dns_ips": [],
+            "domain_fqdn": "",
+            "domain_iam_role_name": "",
+            "domain_ou": "",
+            "enabled_cloudwatch_logs_exports": [],
+            "endpoint": "baoafrik-staging.cuheqogao4f2.us-east-1.rds.amazonaws.com:5432",
+            "engine": "postgres",
+            "engine_lifecycle_support": "open-source-rds-extended-support",
+            "engine_version": "17.5",
+            "engine_version_actual": "17.5",
+            "final_snapshot_identifier": null,
+            "hosted_zone_id": "Z2R2ITUGPM61AM",
+            "iam_database_authentication_enabled": false,
+            "id": "db-EIVGNHVKRYGYCPHBA5HGMLLXII",
+            "identifier": "baoafrik-staging",
+            "identifier_prefix": "",
+            "instance_class": "db.t3.micro",
+            "iops": 0,
+            "kms_key_id": "",
+            "latest_restorable_time": "",
+            "license_model": "postgresql-license",
+            "listener_endpoint": [],
+            "maintenance_window": "sat:04:06-sat:04:36",
+            "manage_master_user_password": null,
+            "master_user_secret": [],
+            "master_user_secret_kms_key_id": null,
+            "max_allocated_storage": 0,
+            "monitoring_interval": 0,
+            "monitoring_role_arn": "",
+            "multi_az": false,
+            "nchar_character_set_name": "",
+            "network_type": "IPV4",
+            "option_group_name": "default:postgres-17",
+            "parameter_group_name": "default.postgres17",
+            "password": "Baoafrik-pass23",
+            "password_wo": null,
+            "password_wo_version": null,
+            "performance_insights_enabled": false,
+            "performance_insights_kms_key_id": "",
+            "performance_insights_retention_period": 0,
+            "port": 5432,
+            "publicly_accessible": false,
+            "region": "us-east-1",
+            "replica_mode": "",
+            "replicas": [],
+            "replicate_source_db": "",
+            "resource_id": "db-EIVGNHVKRYGYCPHBA5HGMLLXII",
+            "restore_to_point_in_time": [],
+            "s3_import": [],
+            "skip_final_snapshot": true,
+            "snapshot_identifier": null,
+            "status": "available",
+            "storage_encrypted": false,
+            "storage_throughput": 0,
+            "storage_type": "gp2",
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "timezone": "",
+            "upgrade_storage_config": null,
+            "username": "bao_master",
+            "vpc_security_group_ids": [
+              "sg-0cb19ff18d7c4f612"
+            ]
+          },
+          "sensitive_attributes": [
+            [
+              {
+                "type": "get_attr",
+                "value": "password"
+              }
+            ],
+            [
+              {
+                "type": "get_attr",
+                "value": "password_wo"
+              }
+            ]
+          ],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjozMDAwMDAwMDAwMDAwLCJkZWxldGUiOjM2MDAwMDAwMDAwMDAsInVwZGF0ZSI6NDgwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMiJ9",
+          "dependencies": [
+            "module.rds_staging.aws_db_subnet_group.subnets",
+            "module.rds_staging.aws_security_group.db_sg",
+            "module.vpc.aws_subnet.private",
+            "module.vpc.aws_vpc.staging",
+            "module.vpc.aws_vpc.this",
+            "module.vpc.data.aws_availability_zones.azs"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.rds_staging",
+      "mode": "managed",
+      "type": "aws_db_subnet_group",
+      "name": "subnets",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:rds:us-east-1:522814722996:subgrp:baoafrik-staging-db-subnet-group",
+            "description": "Managed by Terraform",
+            "id": "baoafrik-staging-db-subnet-group",
+            "name": "baoafrik-staging-db-subnet-group",
+            "name_prefix": "",
+            "region": "us-east-1",
+            "subnet_ids": [
+              "subnet-06fb52590af6f6e11",
+              "subnet-0d66bed4fd310b99f"
+            ],
+            "supported_network_types": [
+              "IPV4"
+            ],
+            "tags": {
+              "Name": "baoafrik-staging-db-subnet-group"
+            },
+            "tags_all": {
+              "Name": "baoafrik-staging-db-subnet-group"
+            },
+            "vpc_id": "vpc-0fefc4329370bda4e"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "bnVsbA==",
+          "dependencies": [
+            "module.vpc.aws_subnet.private",
+            "module.vpc.aws_vpc.staging",
+            "module.vpc.aws_vpc.this",
+            "module.vpc.data.aws_availability_zones.azs"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.rds_staging",
+      "mode": "managed",
+      "type": "aws_security_group",
+      "name": "db_sg",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:522814722996:security-group/sg-0cb19ff18d7c4f612",
+            "description": "Allow Postgres from ECS",
+            "egress": [
+              {
+                "cidr_blocks": [
+                  "0.0.0.0/0"
+                ],
+                "description": "",
+                "from_port": 0,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "-1",
+                "security_groups": [],
+                "self": false,
+                "to_port": 0
+              }
+            ],
+            "id": "sg-0cb19ff18d7c4f612",
+            "ingress": [
+              {
+                "cidr_blocks": [
+                  "50.10.0.0/16"
+                ],
+                "description": "",
+                "from_port": 5432,
+                "ipv6_cidr_blocks": [],
+                "prefix_list_ids": [],
+                "protocol": "tcp",
+                "security_groups": [],
+                "self": false,
+                "to_port": 5432
+              }
+            ],
+            "name": "baoafrik-staging-db-sg",
+            "name_prefix": "",
+            "owner_id": "522814722996",
+            "region": "us-east-1",
+            "revoke_rules_on_delete": false,
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0fefc4329370bda4e"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "id": "sg-0cb19ff18d7c4f612",
+            "region": "us-east-1"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6OTAwMDAwMDAwMDAwfSwic2NoZW1hX3ZlcnNpb24iOiIxIn0=",
+          "dependencies": [
+            "module.vpc.aws_vpc.staging",
+            "module.vpc.aws_vpc.this"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.route53_records",
+      "mode": "managed",
+      "type": "aws_route53_record",
+      "name": "caa",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 2,
+          "attributes": {
+            "alias": [],
+            "allow_overwrite": null,
+            "cidr_routing_policy": [],
+            "failover_routing_policy": [],
+            "fqdn": "baoafrik.com",
+            "geolocation_routing_policy": [],
+            "geoproximity_routing_policy": [],
+            "health_check_id": "",
+            "id": "Z00954863T4EC4UQMOUK5_baoafrik.com_CAA",
+            "latency_routing_policy": [],
+            "multivalue_answer_routing_policy": false,
+            "name": "baoafrik.com",
+            "records": [
+              "0 issue \"amazon.com\"",
+              "0 issue \"letsencrypt.org\""
+            ],
+            "set_identifier": "",
+            "timeouts": null,
+            "ttl": 300,
+            "type": "CAA",
+            "weighted_routing_policy": [],
+            "zone_id": "Z00954863T4EC4UQMOUK5"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "name": "baoafrik.com",
+            "set_identifier": null,
+            "type": "CAA",
+            "zone_id": "Z00954863T4EC4UQMOUK5"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInVwZGF0ZSI6MTgwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMiJ9",
+          "dependencies": [
+            "data.aws_route53_zone.baoafrik"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.route53_records",
+      "mode": "managed",
+      "type": "aws_route53_record",
+      "name": "jenkins",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 2,
+          "attributes": {
+            "alias": [],
+            "allow_overwrite": null,
+            "cidr_routing_policy": [],
+            "failover_routing_policy": [],
+            "fqdn": "jenkins.baoafrik.com",
+            "geolocation_routing_policy": [],
+            "geoproximity_routing_policy": [],
+            "health_check_id": "",
+            "id": "Z00954863T4EC4UQMOUK5_jenkins.baoafrik.com_A",
+            "latency_routing_policy": [],
+            "multivalue_answer_routing_policy": false,
+            "name": "jenkins.baoafrik.com",
+            "records": [
+              "54.162.69.251"
+            ],
+            "set_identifier": "",
+            "timeouts": null,
+            "ttl": 300,
+            "type": "A",
+            "weighted_routing_policy": [],
+            "zone_id": "Z00954863T4EC4UQMOUK5"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "name": "jenkins.baoafrik.com",
+            "set_identifier": null,
+            "type": "A",
+            "zone_id": "Z00954863T4EC4UQMOUK5"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInVwZGF0ZSI6MTgwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMiJ9",
+          "dependencies": [
+            "aws_security_group.staging_sg",
+            "data.aws_route53_zone.baoafrik",
+            "module.ec2_staging.aws_instance.staging_server",
+            "module.ec2_staging.data.aws_ami.latest_ubuntu",
+            "module.iam.aws_iam_instance_profile.server_instance_profile",
+            "module.iam.aws_iam_role.server_role",
+            "module.vpc.aws_subnet.public",
+            "module.vpc.aws_vpc.staging",
+            "module.vpc.aws_vpc.this",
+            "module.vpc.data.aws_availability_zones.azs"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.route53_records",
+      "mode": "managed",
+      "type": "aws_route53_record",
+      "name": "staging",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 2,
+          "attributes": {
+            "alias": [],
+            "allow_overwrite": null,
+            "cidr_routing_policy": [],
+            "failover_routing_policy": [],
+            "fqdn": "staging.baoafrik.com",
+            "geolocation_routing_policy": [],
+            "geoproximity_routing_policy": [],
+            "health_check_id": "",
+            "id": "Z00954863T4EC4UQMOUK5_staging.baoafrik.com_A",
+            "latency_routing_policy": [],
+            "multivalue_answer_routing_policy": false,
+            "name": "staging.baoafrik.com",
+            "records": [
+              "54.162.69.251"
+            ],
+            "set_identifier": "",
+            "timeouts": null,
+            "ttl": 300,
+            "type": "A",
+            "weighted_routing_policy": [],
+            "zone_id": "Z00954863T4EC4UQMOUK5"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "name": "staging.baoafrik.com",
+            "set_identifier": null,
+            "type": "A",
+            "zone_id": "Z00954863T4EC4UQMOUK5"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxODAwMDAwMDAwMDAwLCJkZWxldGUiOjE4MDAwMDAwMDAwMDAsInVwZGF0ZSI6MTgwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMiJ9",
+          "dependencies": [
+            "aws_security_group.staging_sg",
+            "data.aws_route53_zone.baoafrik",
+            "module.ec2_staging.aws_instance.staging_server",
+            "module.ec2_staging.data.aws_ami.latest_ubuntu",
+            "module.iam.aws_iam_instance_profile.server_instance_profile",
+            "module.iam.aws_iam_role.server_role",
+            "module.vpc.aws_subnet.public",
+            "module.vpc.aws_vpc.staging",
+            "module.vpc.aws_vpc.this",
+            "module.vpc.data.aws_availability_zones.azs"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.route53_zone",
+      "mode": "data",
+      "type": "aws_route53_zone",
+      "name": "zone",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:route53:::hostedzone/Z00954863T4EC4UQMOUK5",
+            "caller_reference": "41151c8d-d82f-47c9-957b-f414f8cb2f27",
+            "comment": "Hosting the Bao'Afrik project",
+            "id": "Z00954863T4EC4UQMOUK5",
+            "linked_service_description": null,
+            "linked_service_principal": null,
+            "name": "baoafrik.com",
+            "name_servers": [
+              "ns-262.awsdns-32.com",
+              "ns-811.awsdns-37.net",
+              "ns-1315.awsdns-36.org",
+              "ns-1835.awsdns-37.co.uk"
+            ],
+            "primary_name_server": "ns-262.awsdns-32.com",
+            "private_zone": false,
+            "resource_record_set_count": 14,
+            "tags": {},
+            "vpc_id": null,
+            "zone_id": "Z00954863T4EC4UQMOUK5"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "data",
+      "type": "aws_availability_zones",
+      "name": "azs",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "all_availability_zones": null,
+            "exclude_names": null,
+            "exclude_zone_ids": null,
+            "filter": null,
+            "group_names": [
+              "us-east-1-zg-1"
+            ],
+            "id": "us-east-1",
+            "names": [
+              "us-east-1a",
+              "us-east-1b",
+              "us-east-1c",
+              "us-east-1d",
+              "us-east-1e",
+              "us-east-1f"
+            ],
+            "region": "us-east-1",
+            "state": "available",
+            "timeouts": null,
+            "zone_ids": [
+              "use1-az6",
+              "use1-az1",
+              "use1-az2",
+              "use1-az4",
+              "use1-az3",
+              "use1-az5"
+            ]
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_internet_gateway",
+      "name": "igw",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:522814722996:internet-gateway/igw-0b76c2ac946365b21",
+            "id": "igw-0b76c2ac946365b21",
+            "owner_id": "522814722996",
+            "region": "us-east-1",
+            "tags": {},
+            "tags_all": {},
+            "timeouts": null,
+            "vpc_id": "vpc-0fefc4329370bda4e"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjoxMjAwMDAwMDAwMDAwLCJkZWxldGUiOjEyMDAwMDAwMDAwMDAsInVwZGF0ZSI6MTIwMDAwMDAwMDAwMH19",
+          "dependencies": [
+            "module.vpc.aws_vpc.staging",
+            "module.vpc.aws_vpc.this"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_subnet",
+      "name": "private",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "index_key": 1,
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:522814722996:subnet/subnet-0d66bed4fd310b99f",
+            "assign_ipv6_address_on_creation": false,
+            "availability_zone": "us-east-1b",
+            "availability_zone_id": "use1-az1",
+            "cidr_block": "50.10.11.0/24",
+            "customer_owned_ipv4_pool": "",
+            "enable_dns64": false,
+            "enable_lni_at_device_index": 0,
+            "enable_resource_name_dns_a_record_on_launch": false,
+            "enable_resource_name_dns_aaaa_record_on_launch": false,
+            "id": "subnet-0d66bed4fd310b99f",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_association_id": "",
+            "ipv6_native": false,
+            "map_customer_owned_ip_on_launch": false,
+            "map_public_ip_on_launch": false,
+            "outpost_arn": "",
+            "owner_id": "522814722996",
+            "private_dns_hostname_type_on_launch": "ip-name",
+            "region": "us-east-1",
+            "tags": {
+              "Name": "baoafrik-private-2"
+            },
+            "tags_all": {
+              "Name": "baoafrik-private-2"
+            },
+            "timeouts": null,
+            "vpc_id": "vpc-0fefc4329370bda4e"
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "identity": {
+            "account_id": "522814722996",
+            "id": "subnet-0d66bed4fd310b99f",
+            "region": "us-east-1"
+          },
+          "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9",
+          "dependencies": [
+            "module.vpc.aws_vpc.staging",
+            "module.vpc.aws_vpc.this",
+            "module.vpc.data.aws_availability_zones.azs"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "staging",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": []
+    },
+    {
+      "module": "module.vpc",
+      "mode": "managed",
+      "type": "aws_vpc",
+      "name": "this",
+      "provider": "provider[\"registry.terraform.io/hashicorp/aws\"]",
+      "instances": [
+        {
+          "schema_version": 1,
+          "attributes": {
+            "arn": "arn:aws:ec2:us-east-1:522814722996:vpc/vpc-0fefc4329370bda4e",
+            "assign_generated_ipv6_cidr_block": false,
+            "cidr_block": "50.10.0.0/16",
+            "default_network_acl_id": "acl-0523ae727ca5275ab",
+            "default_route_table_id": "rtb-03e338ed9448103a7",
+            "default_security_group_id": "sg-03963ae9d9f9ad2b6",
+            "dhcp_options_id": "dopt-092f7fd336493558b",
+            "enable_dns_hostnames": true,
+            "enable_dns_support": true,
+            "enable_network_address_usage_metrics": false,
+            "id": "vpc-0fefc4329370bda4e",
+            "instance_tenancy": "default",
+            "ipv4_ipam_pool_id": null,
+            "ipv4_netmask_length": null,
+            "ipv6_association_id": "",
+            "ipv6_cidr_block": "",
+            "ipv6_cidr_block_network_border_group": "",
+            "ipv6_ipam_pool_id": "",
+            "ipv6_netmask_length": 0,
+            "main_route_table_id": "rtb-03e338ed9448103a7",
+            "owner_id": "522814722996",
+            "region": "us-east-1",
+            "tags": {
+              "Name": "baoafrik"
+            },
+            "tags_all": {
+              "Name": "baoafrik"
+            }
+          },
+          "sensitive_attributes": [],
+          "identity_schema_version": 0,
+          "private": "eyJzY2hlbWFfdmVyc2lvbiI6IjEifQ=="
+        }
+      ]
+    }
+  ],
+  "check_results": null
+}
