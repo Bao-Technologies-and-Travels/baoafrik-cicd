@@ -6,12 +6,13 @@ pipeline {
         NODE_ENV = 'staging'
         SSH_KEY_ID = 'baoafrik-key'
         SSH_HOST = 'ashprincepageo@34.51.248.43'
-        FRONTEND_DIR = '~/BaoAfrik/frontend'
-        BACKEND_DIR = '~/BaoAfrik/backend'
+        FRONTEND_DIR = '~/baoafrik-frontend'
+        BACKEND_DIR = '~/baoafrik-backend'
         APP_NAME_FRONTEND = 'frontend'
         APP_NAME_BACKEND = 'backend'
-        REPO_URL = 'https://github.com/Bao-Technologies-and-Travels/BaoAfrik.git'
-        BRANCH = 'fonsah-staging'
+        FRONTEND_REPO_URL = 'https://github.com/Bao-Technologies-and-Travels/baoafrik-frontend.git'
+        BACKEND_REPO_URL = 'https://github.com/Bao-Technologies-and-Travels/baoafrik-backend.git'
+        BRANCH = 'main'
         DOMAIN = 'staging.baoafrik.com'
         EMAIL = 'pageo.fonsah@baotechnologiesandtravels.com'
         BAOTECHNOLOGIES_DEV_TEAM = 'wendy.tembong@baotechnologiesandtravels.com,esther.eyere@baotechnologiesandtravels.com,toni.ebong@baotechnologiesandtravels.com,glory.tama@baotechnologiesandtravels.com,lionel.ngansop@baotechnologiesandtravels.com,arrey.johnson@baotechnologiesandtravels.com,beltus.tah@baotechnologiesandtravels.com,romanric.akam@baotechnologiesandtravels.com'
@@ -53,16 +54,6 @@ pipeline {
                     // step 4: install other dependencies
                     sh """
                     ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
-                        # Install Nginx if not already installed
-                        if ! command -v nginx &> /dev/null; then
-                            sudo apt install -y nginx
-                        fi
-
-                        # Install certbot for SSL if not present
-                        if ! command -v certbot &> /dev/null; then
-                            sudo apt install -y certbot python3-certbot-nginx
-                        fi
-
                         # Setup PM2
                         pm2 startup systemd
 
@@ -79,22 +70,44 @@ pipeline {
             }
         }
 
-        stage('Clone Repository') {
+        stage('Clone frontend Repository') {
             steps {
-                echo 'Cloning repository...'
+                echo 'Cloning frontend repository...'
                 sshagent([env.SSH_KEY_ID]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
                         set -e
-                        if [ ! -d ~/BaoAfrik ]; then
-                            git clone -b ${BRANCH} ${REPO_URL} ~/BaoAfrik
+                        if [ ! -d ~/baoafrik-frontend ]; then
+                            git clone -b ${BRANCH} ${FRONTEND_REPO_URL} ~/baoafrik-frontend
                         fi
 
                         cd ${FRONTEND_DIR}
                         git fetch origin ${BRANCH}
                         git checkout ${BRANCH}
                         git reset --hard origin/${BRANCH}
-                        echo "Repository cloned/updated successfully."
+                        echo "Frontend repository cloned/updated successfully."
+                    '
+                    """
+                }
+            }
+        }
+
+        stage('Clone backend Repository') {
+            steps {
+                echo 'Cloning repository...'
+                sshagent([env.SSH_KEY_ID]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                        set -e
+                        if [ ! -d ~/baoafrik-backend ]; then
+                            git clone -b ${BRANCH} ${BACKEND_REPO_URL} ~/baoafrik-backend
+                        fi
+
+                        cd ${BACKEND_DIR}
+                        git fetch origin ${BRANCH}
+                        git checkout ${BRANCH}
+                        git reset --hard origin/${BRANCH}
+                        echo "Backedn repository cloned/updated successfully."
                     '
                     """
                 }
@@ -108,6 +121,8 @@ pipeline {
                     string(credentialsId: 'gcp_client_email',    variable: 'GCP_CLIENT_EMAIL'),
                     string(credentialsId: 'gcp_private_key',     variable: 'GCP_PRIVATE_KEY'),
                     string(credentialsId: 'gcp_storage_bucket',  variable: 'GCP_STORAGE_BUCKET'),
+                    string(credentialsId: 'app_encryption_key',  variable: 'APP_ENCRYPTION_KEY'),
+                    string(credentialsId: 'db_encryption_key',  variable: 'DB_ENCRYPTION_KEY'),
                 ]) {
                     sshagent([env.SSH_KEY_ID]) {
                         sh """
@@ -131,8 +146,8 @@ GCP_STORAGE_BUCKET="${GCP_STORAGE_BUCKET}"
 STORAGE_PROFILE_PREFIX=profile-images
 STORAGE_ATTACHMENTS_PREFIX=chat-attachments
 STORAGE_PRODUCT_PREFIX=product-images
-APP_ENCRYPTION_KEY="fonsahappencrypt"
-DB_ENCRYPTION_KEY="fonsahdbencrypt"
+APP_ENCRYPTION_KEY="${APP_ENCRYPTION_KEY}"
+DB_ENCRYPTION_KEY="${DB_ENCRYPTION_KEY}"
 EOF
 
                             chmod 600 .env
@@ -159,6 +174,8 @@ EOF
                     string(credentialsId: 'twilio_account_sid', variable: 'TWILIO_ACCOUNT_SID'),
                     string(credentialsId: 'twilio_auth_token', variable: 'TWILIO_AUTH_TOKEN'),
                     string(credentialsId: 'twilio_phone_number', variable: 'TWILIO_PHONE_NUMBER'),
+                    string(credentialsId: 'app_encryption_key',  variable: 'APP_ENCRYPTION_KEY'),
+                    string(credentialsId: 'db_encryption_key',  variable: 'DB_ENCRYPTION_KEY'),
                 ]) {
                     sshagent([env.SSH_KEY_ID]) {
                         sh """
@@ -202,8 +219,8 @@ STORAGE_PROFILE_PREFIX=profile-images
 STORAGE_ATTACHMENTS_PREFIX=chat-attachments
 STORAGE_PRODUCT_PREFIX=product-images
 
-APP_ENCRYPTION_KEY="fonsahappencrypt"
-DB_ENCRYPTION_KEY="fonsahdbencrypt"
+APP_ENCRYPTION_KEY="${APP_ENCRYPTION_KEY}"
+DB_ENCRYPTION_KEY="${DB_ENCRYPTION_KEY}"
 
 FRONTEND_URL="https://${DOMAIN}"
 CORS_ORIGINS="https://${DOMAIN}"
@@ -224,9 +241,9 @@ EOF
             }
         }
 
-        stage('Deploy Application') {
+        stage('Deploy backend on server ') {
             steps {
-                echo 'Deploying frontend and backend on server...'
+                echo 'Deploying frontend on server...'
 
                 sshagent([env.SSH_KEY_ID]) {
                     sh """
@@ -254,6 +271,19 @@ EOF
                         pm2 save
 
                         echo "Backend deployed successfully."
+                    '
+                    """
+                }
+            }
+        }
+
+        stage('Deploy frontend ') {
+            steps {
+                echo 'Deploying frontend on server...'
+
+                sshagent([env.SSH_KEY_ID]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
                         echo "Starting frontend deployment..."
 
                         cd ${FRONTEND_DIR}
