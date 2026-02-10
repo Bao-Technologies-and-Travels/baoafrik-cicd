@@ -10,8 +10,8 @@ pipeline {
         BACKEND_DIR = '~/baoafrik-backend'
         APP_NAME_FRONTEND = 'frontend'
         APP_NAME_BACKEND = 'backend'
-        FRONTEND_REPO_URL = 'https://github.com/Bao-Technologies-and-Travels/baoafrik-frontend.git'
-        BACKEND_REPO_URL = 'https://github.com/Bao-Technologies-and-Travels/baoafrik-backend.git'
+        FRONTEND_REPO_URL = 'git@github.com:Bao-Technologies-and-Travels/baoafrik-frontend.git'
+        BACKEND_REPO_URL = 'git@github.com:Bao-Technologies-and-Travels/baoafrik-backend.git'
         BRANCH = 'main'
         DOMAIN = 'staging.baoafrik.com'
         EMAIL = 'pageo.fonsah@baotechnologiesandtravels.com'
@@ -345,7 +345,6 @@ EOF
                             <h2 style="color: #2E86C1;">BaoAfrik Staging Notification</h2>
                             <p><strong>Job:</strong> ${env.JOB_NAME}</p>
                             <p><strong>Status:</strong> <span style="color: ${currentBuild.currentResult == 'SUCCESS' ? 'green' : 'red'};">${currentBuild.currentResult}</span></p>
-                            <p><strong>Changes made:</strong>Updated the flow for making a request to handle image uploading, and new request details in teh modal added by designer.</p>
                             <p>Check the <a href="${env.BUILD_URL}"> console output</a> for details and also see recent changes at <a href="${env.DOMAIN}"></a>.</p>
                             <hr>
                             <p style="font-size: 0.9em; color: #565;">This is an automated email from Jenkins. Please do not reply.</p>
