@@ -1,0 +1,261 @@
+/* groovylint-disable CompileStatic, DuplicateMapLiteral, DuplicateStringLiteral, LineLength, NestedBlockDepth */
+pipeline {
+    agent any
+
+    environment {
+        NODE_ENV = 'staging'
+        SSH_KEY_ID = 'baoafrik-key'
+        SSH_HOST = 'ashprincepageo@34.51.248.43'
+        APP_DIR = '~/baoafrik-backend'
+        APP_NAME = 'backend'
+        REPO_URL = 'git@github.com:Bao-Technologies-and-Travels/baoafrik-backend.git'
+        BRANCH = 'main'
+        DOMAIN = 'staging.baoafrik.com'
+        EMAIL = 'pageo.fonsah@baotechnologiesandtravels.com'
+        BAOTECHNOLOGIES_DEV_TEAM = 'wendy.tembong@baotechnologiesandtravels.com,esther.eyere@baotechnologiesandtravels.com,toni.ebong@baotechnologiesandtravels.com,glory.tama@baotechnologiesandtravels.com,lionel.ngansop@baotechnologiesandtravels.com,arrey.johnson@baotechnologiesandtravels.com,beltus.tah@baotechnologiesandtravels.com,romanric.akam@baotechnologiesandtravels.com'
+    }
+
+    stages {
+        stage('Setup server dependencies') {
+            steps {
+                echo 'Setting up server dependencies...'
+
+                sshagent([env.SSH_KEY_ID]) {
+                    // step 1: system updates
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                    set -e
+                        # Update and upgrade server packages
+                        sudo apt update && sudo apt upgrade -y
+                    '
+                    """
+
+                    // step 2: install Nodejs
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                        # Install Node.js and npm if not already installed
+                        curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
+                        sudo apt install -y nodejs
+                    '
+                    """
+
+                    // step 3: install pm2
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                        # Install PM2 globally
+                        sudo npm install -g pm2@latest
+                        pm2 --version
+                    '
+                    """
+
+                    // step 4: install other dependencies
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                        # Setup PM2
+                        pm2 startup systemd
+
+                        # Install serve
+                        sudo npm install -g serve
+
+                        # Install postgres
+                        sudo apt install -y postgresql postgresql-client-common -y
+
+                        echo "System dependencies installed successfully."
+                    '
+                    """
+                }
+            }
+        }
+
+        stage('Clone backend Repository') {
+            steps {
+                echo 'Cloning repository...'
+                sshagent([env.SSH_KEY_ID]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                        set -e
+                        if [ ! -d ~/baoafrik-backend ]; then
+                            git clone -b ${BRANCH} ${REPO_URL} ~/baoafrik-backend
+                        fi
+
+                        cd ${APP_DIR}
+                        git fetch origin ${BRANCH}
+                        git checkout ${BRANCH}
+                        git reset --hard origin/${BRANCH}
+                        echo "Backedn repository cloned/updated successfully."
+                    '
+                    """
+                }
+            }
+        }
+
+        stage('Setup Backend Environment') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'db_url', variable: 'DATABASE_URL'),
+                    string(credentialsId: 'jwt_secret', variable: 'JWT_SECRET'),
+                    string(credentialsId: 'jwt_refresh_secret', variable: 'JWT_REFRESH_SECRET'),
+                    string(credentialsId: 'resend_api_key', variable: 'RESEND_API_KEY'),
+                    string(credentialsId: 'gcp_project_id',      variable: 'GCP_PROJECT_ID'),
+                    string(credentialsId: 'gcp_client_email',    variable: 'GCP_CLIENT_EMAIL'),
+                    string(credentialsId: 'gcp_private_key',     variable: 'GCP_PRIVATE_KEY'),
+                    string(credentialsId: 'gcp_storage_bucket',  variable: 'GCP_STORAGE_BUCKET'),
+                    string(credentialsId: 'email_from_address',  variable: 'EMAIL_FROM_ADDRESS'),
+                    string(credentialsId: 'email_password',  variable: 'EMAIL_PASSWORD'),
+                    string(credentialsId: 'twilio_account_sid', variable: 'TWILIO_ACCOUNT_SID'),
+                    string(credentialsId: 'twilio_auth_token', variable: 'TWILIO_AUTH_TOKEN'),
+                    string(credentialsId: 'twilio_phone_number', variable: 'TWILIO_PHONE_NUMBER'),
+                    string(credentialsId: 'app_encryption_key',  variable: 'APP_ENCRYPTION_KEY'),
+                    string(credentialsId: 'db_encryption_key',  variable: 'DB_ENCRYPTION_KEY'),
+                ]) {
+                    sshagent([env.SSH_KEY_ID]) {
+                        sh """
+                        ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                            set -e
+                            cd ${APP_DIR}
+
+                            # Remove existing .env if any
+                            rm -f .env
+
+                            # Create .env file with actual secrets
+                            cat > .env << EOF
+NODE_ENV=staging
+PORT=3001
+
+DATABASE_URL="${DATABASE_URL}"
+JWT_SECRET="${JWT_SECRET}"
+JWT_REFRESH_SECRET="${JWT_REFRESH_SECRET}"
+JWT_EXPIRE_TIME=30m
+JWT_REFRESH_EXPIRE_TIME=7d
+
+EMAIL_SERVICE=resend
+RESEND_API_KEY="${RESEND_API_KEY}"
+EMAIL_FROM_NAME="BaoAfrik Team"
+EMAIL_FROM_ADDRESS="no-reply@baoafrik.com"
+
+# EMAIL_SERVICE="gmail"
+# SMTP_HOST="smtp.gmail.com"
+# SMTP_PORT="587"
+# SMTP_SECURE="false"
+# EMAIL_FROM_ADDRESS="${EMAIL_FROM_ADDRESS}"
+# EMAIL_PASSWORD="${EMAIL_PASSWORD}"
+# EMAIL_FROM_NAME="BaoAfrik Team"
+
+GCP_PROJECT_ID="${GCP_PROJECT_ID}"
+GCP_CLIENT_EMAIL="${GCP_CLIENT_EMAIL}"
+GCP_PRIVATE_KEY="${GCP_PRIVATE_KEY}"
+GCP_STORAGE_BUCKET="${GCP_STORAGE_BUCKET}"
+
+STORAGE_PROFILE_PREFIX=profile-images
+STORAGE_ATTACHMENTS_PREFIX=chat-attachments
+STORAGE_PRODUCT_PREFIX=product-images
+
+APP_ENCRYPTION_KEY="${APP_ENCRYPTION_KEY}"
+DB_ENCRYPTION_KEY="${DB_ENCRYPTION_KEY}"
+
+FRONTEND_URL="https://${DOMAIN}"
+CORS_ORIGINS="https://${DOMAIN}"
+BCRYPT_ROUNDS=12
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+
+TWILIO_ACCOUNT_SID="${TWILIO_ACCOUNT_SID}"
+TWILIO_AUTH_TOKEN="${TWILIO_AUTH_TOKEN}"
+TWILIO_PHONE_NUMBER="${TWILIO_PHONE_NUMBER}"
+EOF
+
+                            chmod 600 .env
+                        '
+                        """
+                    }
+                }
+            }
+        }
+
+        stage('Deploy backend on server ') {
+            steps {
+                echo 'Deploying frontend on server...'
+
+                sshagent([env.SSH_KEY_ID]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                        echo "Starting backend deployment..."
+
+                        cd ${APP_DIR}
+
+                        if [ ! -f .env ]; then
+                            echo "ERROR: .env file not found!"
+                            exit 1
+                        fi
+
+                        rm -rf dist/ node_modules package-lock.json
+
+                        npm install
+
+                        npx prisma generate
+                        npx prisma db push
+
+                        npm run build
+
+                        pm2 delete ${APP_NAME} || true
+                        pm2 start dist/server.js --name ${APP_NAME} -- --port 3001
+                        pm2 save
+
+                        echo "Backend deployed successfully."
+                    '
+                    """
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                emailext(
+                        subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
+                        to: "${env.EMAIL}",
+                        from: 'no-reply@baoafrik.com',
+                        replyTo: 'no-reply@baoafrik.com',
+                        body: """
+                            <html>
+                                <body style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+                                    <h2 style="color: #2E86C1;">Jenkins Build Notification</h2>
+                                    <p><strong>Job:</strong> ${env.JOB_NAME}</p>
+                                    <p><strong>Build Number:</strong> ${env.BUILD_NUMBER}</p>
+                                    <p><strong>Status:</strong> <span style="color: ${currentBuild.currentResult == 'SUCCESS' ? 'green' : 'red'};">${currentBuild.currentResult}</span></p>
+                                    <p>Check the <a href="${env.BUILD_URL}">console output</a> for details.</p>
+                                    <hr>
+                                    <p style="font-size: 0.9em; color: #565;">This is an automated email from Jenkins. Please do not reply.</p>
+                                </body>
+                            </html>
+                        """,
+                        mimeType: 'text/html'
+                    )
+            }
+        }
+        success {
+            script {
+                emailext(
+                subject: "${env.JOB_NAME} - ${currentBuild.currentResult}",
+                to: "${env.BAOTECHNOLOGIES_DEV_TEAM}",
+                from: 'no-reply@baoafrik.com',
+                replyTo: 'no-reply@baoafrik.com',
+                body: """
+                    <html>
+                        <body style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
+                            <h2 style="color: #2E86C1;">BaoAfrik Staging Notification</h2>
+                            <p><strong>Job:</strong> ${env.JOB_NAME}</p>
+                            <p><strong>Status:</strong> <span style="color: ${currentBuild.currentResult == 'SUCCESS' ? 'green' : 'red'};">${currentBuild.currentResult}</span></p>
+                            <p>Check the <a href="${env.BUILD_URL}"> console output</a> for details and also see recent changes at <a href="${env.DOMAIN}"></a>.</p>
+                            <hr>
+                            <p style="font-size: 0.9em; color: #565;">This is an automated email from Jenkins. Please do not reply.</p>
+                        </body>
+                    </html>
+                """,
+                mimeType: 'text/html'
+                )
+            }
+        }
+    }
+}
