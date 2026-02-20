@@ -9,7 +9,7 @@ pipeline {
         APP_DIR = '~/baoafrik-frontend'
         APP_NAME = 'frontend'
         REPO_URL = 'git@github.com:Bao-Technologies-and-Travels/baoafrik-frontend.git'
-        BRANCH = 'main'
+        BRANCH = 'staging'
         DOMAIN = 'staging.baoafrik.com'
         EMAIL = 'pageo.fonsah@baotechnologiesandtravels.com'
         BAOTECHNOLOGIES_DEV_TEAM = 'wendy.tembong@baotechnologiesandtravels.com,esther.eyere@baotechnologiesandtravels.com,toni.ebong@baotechnologiesandtravels.com,glory.tama@baotechnologiesandtravels.com,lionel.ngansop@baotechnologiesandtravels.com,arrey.johnson@baotechnologiesandtravels.com,beltus.tah@baotechnologiesandtravels.com,romanric.akam@baotechnologiesandtravels.com'
