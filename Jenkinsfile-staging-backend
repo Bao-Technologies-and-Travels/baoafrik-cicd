@@ -107,6 +107,7 @@ pipeline {
                     string(credentialsId: 'twilio_phone_number', variable: 'TWILIO_PHONE_NUMBER'),
                     string(credentialsId: 'app_encryption_key',  variable: 'APP_ENCRYPTION_KEY'),
                     string(credentialsId: 'db_encryption_key',  variable: 'DB_ENCRYPTION_KEY'),
+                    string(credentialsId: 'contact_support_to',  variable: 'CONTACT_SUPPORT_TO'),
                 ]) {
                     sshagent([env.SSH_KEY_ID]) {
                         sh """
@@ -162,6 +163,8 @@ RATE_LIMIT_MAX_REQUESTS=100
 TWILIO_ACCOUNT_SID="${TWILIO_ACCOUNT_SID}"
 TWILIO_AUTH_TOKEN="${TWILIO_AUTH_TOKEN}"
 TWILIO_PHONE_NUMBER="${TWILIO_PHONE_NUMBER}"
+
+CONTACT_SUPPORT_TO="${CONTACT_SUPPORT_TO}"
 EOF
 
                             chmod 600 .env
