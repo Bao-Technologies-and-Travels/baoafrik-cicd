@@ -13,6 +13,9 @@ pipeline {
         DOMAIN = 'staging.baoafrik.com'
         EMAIL = 'pageo.fonsah@baotechnologiesandtravels.com'
         BAOTECHNOLOGIES_DEV_TEAM = 'wendy.tembong@baotechnologiesandtravels.com,esther.eyere@baotechnologiesandtravels.com,toni.ebong@baotechnologiesandtravels.com,glory.tama@baotechnologiesandtravels.com,lionel.ngansop@baotechnologiesandtravels.com,arrey.johnson@baotechnologiesandtravels.com,beltus.tah@baotechnologiesandtravels.com,romanric.akam@baotechnologiesandtravels.com'
+        SLACK_CHANNEL = '#staging-deploy-release-notes'
+        GIT_PREVIOUS_COMMIT = ''
+        GIT_COMMIT = ''
     }
 
     stages {
@@ -70,6 +73,14 @@ pipeline {
         stage('Clone backend Repository') {
             steps {
                 echo 'Cloning repository...'
+
+                // Store current commit for changelog generation
+                script {
+                    // Get the latest commit info before cloning/pulling
+                    String commitHash = sh(script: "git ls-remote ${REPO_URL} ${BRANCH} | cut -f1", returnStdout: true).trim()
+                    env.GIT_COMMIT = commitHash
+                }
+
                 sshagent([env.SSH_KEY_ID]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
@@ -79,12 +90,25 @@ pipeline {
                         fi
 
                         cd ${APP_DIR}
+
+                        # Store previous commit for changelog
+                        git rev-parse HEAD > /tmp/previous_commit_backend.txt
+
                         git fetch origin ${BRANCH}
                         git checkout ${BRANCH}
                         git reset --hard origin/${BRANCH}
-                        echo "Backedn repository cloned/updated successfully."
+                        echo "Backend repository cloned/updated successfully."
                     '
                     """
+                }
+
+                // Get previous commit for changelog
+                script {
+                    String previousCommit = sh(
+                        script: "ssh -o StrictHostKeyChecking=no ${SSH_HOST} 'cat /tmp/previous_commit_backend.txt 2>/dev/null || echo \"\"'",
+                        returnStdout: true
+                    ).trim()
+                    env.GIT_PREVIOUS_COMMIT = previousCommit
                 }
             }
         }
@@ -258,7 +282,101 @@ EOF
                 """,
                 mimeType: 'text/html'
                 )
+
+                // Send Slack notification with release notes
+                generateAndSendReleaseNotes()
             }
         }
+    }
+}
+
+// Helper function to send Slack notifications
+void sendSlackNotification(Map args) {
+    String status = args.status
+    String color = args.color
+    String channel = args.channel
+    Boolean includeReleaseNotes = args.containsKey('includeReleaseNotes') ? args.includeReleaseNotes : true
+    String releaseNotesText = args.releaseNotes ?: ''
+
+    String message = "${status}: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}\n"
+    message += "Environment: ${env.NODE_ENV}\n"
+    message += "Branch: ${env.BRANCH}\n"
+    message += "Domain: https://${env.DOMAIN}\n"
+    message += "<${env.BUILD_URL}|View Console Output>\n"
+
+    if (includeReleaseNotes && releaseNotesText) {
+        message += "\n*📝 Release Notes:*\n${releaseNotesText}"
+    }
+
+    slackSend(
+        channel: channel,
+        color: color,
+        message: message
+    )
+}
+
+// Helper function to generate and send release notes
+void generateAndSendReleaseNotes() {
+    try {
+        String releaseNotes = ''
+
+        // If we have previous and current commits, generate changelog
+        if (env.GIT_PREVIOUS_COMMIT && env.GIT_COMMIT && env.GIT_PREVIOUS_COMMIT != env.GIT_COMMIT) {
+            // Try to use Git Changelog plugin if available
+            try {
+                step([
+                    $class: 'GitChangelog',
+                    from: [type: 'COMMIT', value: env.GIT_PREVIOUS_COMMIT],
+                    to: [type: 'COMMIT', value: env.GIT_COMMIT],
+                    format: 'PLAIN',
+                    outputFile: 'changelog.txt'
+                ])
+                releaseNotes = readFile('changelog.txt').trim()
+                sh 'rm -f changelog.txt'
+            } catch (groovy.lang.GroovyRuntimeException e) {
+                echo 'Git Changelog plugin not available, falling back to git log'
+                // Fallback: Use git log to generate release notes
+                releaseNotes = sh(
+                    script: """
+                        git log --pretty=format:"• %s (%h) - %an" ${env.GIT_PREVIOUS_COMMIT}..${env.GIT_COMMIT} 2>/dev/null || echo ""
+                    """,
+                    returnStdout: true
+                ).trim()
+            }
+        } else {
+            // If we can't get previous commit, get recent commits
+            releaseNotes = sh(
+                script: '''
+                    git log --pretty=format:"• %s (%h) - %an" -10 2>/dev/null || echo "Unable to generate release notes"
+                ''',
+                returnStdout: true
+            ).trim()
+        }
+
+        if (releaseNotes.empty) {
+            releaseNotes = 'No new changes detected in this deployment.'
+        }
+
+        // Truncate if too long (Slack has message length limits)
+        final int maxSlackMessageLength = 1500
+        if (releaseNotes.length() > maxSlackMessageLength) {
+            releaseNotes = releaseNotes.substring(0, maxSlackMessageLength) + '\n... (truncated)'
+        }
+
+        // Send success Slack notification with release notes
+        sendSlackNotification(
+            status: 'SUCCESS',
+            color: 'good',
+            channel: env.SLACK_CHANNEL,
+            releaseNotes: releaseNotes
+        )
+    } catch (groovy.lang.GroovyRuntimeException e) {
+        echo "Failed to generate or send release notes: ${e.message}"
+        // Still send success notification without release notes
+        slackSend(
+            channel: env.SLACK_CHANNEL,
+            color: 'good',
+            message: "SUCCESS: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}\nEnvironment: ${env.NODE_ENV}\n<${env.BUILD_URL}|View Console Output>\n\n*Note:* Release notes could not be generated."
+        )
     }
 }
