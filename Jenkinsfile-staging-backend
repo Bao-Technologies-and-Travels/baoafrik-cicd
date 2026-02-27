@@ -361,13 +361,13 @@ void generateAndSendReleaseNotes() {
                 }
             }
         } else {
-            // If we can't get previous commit, get recent commits from remote server
+            // If we can't get previous commit, get all commits from remote server
             sshagent([env.SSH_KEY_ID]) {
                 releaseNotes = sh(
                     script: '''
                         ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
                             cd ''' + APP_DIR + '''
-                            git log --pretty=format:"• %s (%h) - %an" -10 2>/dev/null || echo "Unable to generate release notes"
+                            git log --pretty=format:"• %s (%h) - %an" 2>/dev/null || echo "Unable to generate release notes"
                         '
                     ''',
                     returnStdout: true
