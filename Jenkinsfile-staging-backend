@@ -332,8 +332,16 @@ void generateAndSendReleaseNotes() {
     try {
         String releaseNotes = ''
 
+        echo '=== Release Notes Debug Info ==='
+        echo "GIT_PREVIOUS_COMMIT: ${env.GIT_PREVIOUS_COMMIT}"
+        echo "GIT_COMMIT: ${env.GIT_COMMIT}"
+        echo "Previous commit exists: ${env.GIT_PREVIOUS_COMMIT != null && env.GIT_PREVIOUS_COMMIT != ''}"
+        echo "Current commit exists: ${env.GIT_COMMIT != null && env.GIT_COMMIT != ''}"
+        echo "Commits are different: ${env.GIT_PREVIOUS_COMMIT != env.GIT_COMMIT}"
+
         // If we have previous and current commits, generate changelog
         if (env.GIT_PREVIOUS_COMMIT && env.GIT_COMMIT && env.GIT_PREVIOUS_COMMIT != env.GIT_COMMIT) {
+            echo '=== Attempting Git Changelog Plugin ==='
             // Try to use Git Changelog plugin if available
             try {
                 step([
@@ -345,32 +353,52 @@ void generateAndSendReleaseNotes() {
                 ])
                 releaseNotes = readFile('changelog.txt').trim()
                 sh 'rm -f changelog.txt'
+                echo 'Git Changelog plugin succeeded'
             } catch (groovy.lang.GroovyRuntimeException e) {
-                echo 'Git Changelog plugin not available, falling back to git log'
+                echo "Git Changelog plugin failed: ${e.message}"
+                echo '=== Falling back to git log with commit range ==='
                 // Fallback: Use git log to generate release notes from remote server
-                releaseNotes = sh(
-                    script: '''
-                        ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
-                            cd ''' + APP_DIR + '''
-                            git log --pretty=format:"• %s (%h) - %an" ''' + env.GIT_PREVIOUS_COMMIT + '''..''' + env.GIT_COMMIT + ''' 2>/dev/null || echo ""
-                        '
-                    ''',
-                    returnStdout: true
-                ).trim()
+                sshagent([env.SSH_KEY_ID]) {
+                    try {
+                        releaseNotes = sh(
+                            script: '''
+                                ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
+                                    cd ''' + APP_DIR + '''
+                                    echo "Getting commits between ''' + env.GIT_PREVIOUS_COMMIT + ''' and ''' + env.GIT_COMMIT + '''"
+                                    git log --pretty=format:"• %s (%h) - %an" ''' + env.GIT_PREVIOUS_COMMIT + '''..''' + env.GIT_COMMIT + ''' 2>/dev/null || echo ""
+                                '
+                            ''',
+                            returnStdout: true
+                        ).trim()
+                        echo "SSH git log with range succeeded, got ${releaseNotes.length()} characters"
+                    } catch (groovy.lang.GroovyRuntimeException ex) {
+                        echo "SSH git log with range failed: ${ex.message}"
+                        releaseNotes = "Failed to get commit range: ${ex.message}"
+                    }
+                }
             }
         } else {
+            echo '=== No commit range available, using fallback ==='
             // If we can't get previous commit, get recent commits from remote server
-            releaseNotes = sh(
-                script: '''
-                    ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
-                        cd ''' + APP_DIR + '''
-                        git log --pretty=format:"• %s (%h) - %an" -10 2>/dev/null || echo "Unable to generate release notes"
-                    '
-                ''',
-                returnStdout: true
-            ).trim()
+            sshagent([env.SSH_KEY_ID]) {
+                try {
+                    releaseNotes = sh(
+                        script: '''
+                            ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
+                                cd ''' + APP_DIR + '''
+                                echo "Getting last 10 commits from repository"
+                                git log --pretty=format:"• %s (%h) - %an" -10 2>/dev/null || echo "Unable to generate release notes"
+                            '
+                        ''',
+                        returnStdout: true
+                    ).trim()
+                    echo "SSH git log fallback succeeded, got ${releaseNotes.length()} characters"
+                } catch (groovy.lang.GroovyRuntimeException ex) {
+                    echo "SSH git log fallback failed: ${ex.message}"
+                    releaseNotes = "Failed to get recent commits: ${ex.message}"
+                }
+            }
         }
-
         if (releaseNotes.empty) {
             releaseNotes = 'No new changes detected in this deployment.'
         }
