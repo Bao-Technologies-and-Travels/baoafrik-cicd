@@ -348,31 +348,27 @@ void generateAndSendReleaseNotes() {
             } catch (groovy.lang.GroovyRuntimeException e) {
                 echo 'Git Changelog plugin not available, falling back to git log'
                 // Fallback: Use git log to generate release notes from remote server
-                sshagent([env.SSH_KEY_ID]) {
-                    releaseNotes = sh(
-                        script: '''
-                            ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
-                                cd ''' + APP_DIR + '''
-                                git log --pretty=format:"• %s (%h) - %an" ''' + env.GIT_PREVIOUS_COMMIT + '''..''' + env.GIT_COMMIT + ''' 2>/dev/null || echo ""
-                            '
-                        ''',
-                        returnStdout: true
-                    ).trim()
-                }
-            }
-        } else {
-            // If we can't get previous commit, get all commits from remote server
-            sshagent([env.SSH_KEY_ID]) {
                 releaseNotes = sh(
                     script: '''
                         ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
                             cd ''' + APP_DIR + '''
-                            git log --pretty=format:"• %s (%h) - %an" 2>/dev/null || echo "Unable to generate release notes"
+                            git log --pretty=format:"• %s (%h) - %an" ''' + env.GIT_PREVIOUS_COMMIT + '''..''' + env.GIT_COMMIT + ''' 2>/dev/null || echo ""
                         '
                     ''',
                     returnStdout: true
                 ).trim()
             }
+        } else {
+            // If we can't get previous commit, get recent commits from remote server
+            releaseNotes = sh(
+                script: '''
+                    ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
+                        cd ''' + APP_DIR + '''
+                        git log --pretty=format:"• %s (%h) - %an" -10 2>/dev/null || echo "Unable to generate release notes"
+                    '
+                ''',
+                returnStdout: true
+            ).trim()
         }
 
         if (releaseNotes.empty) {
