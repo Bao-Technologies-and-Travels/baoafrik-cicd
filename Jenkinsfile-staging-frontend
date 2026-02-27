@@ -73,42 +73,52 @@ pipeline {
         stage('Clone frontend Repository') {
             steps {
                 echo 'Cloning frontend repository...'
-
-                // Store current commit for changelog generation
-                script {
-                    // Get the latest commit info before cloning/pulling
-                    String commitHash = sh(script: "git ls-remote ${REPO_URL} ${BRANCH} | cut -f1", returnStdout: true).trim()
-                    env.GIT_COMMIT = commitHash
-                }
-
                 sshagent([env.SSH_KEY_ID]) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
                         set -e
+
+                        # Get current commit hash before cloning/pulling
+                        CURRENT_COMMIT=$(git ls-remote ''' + REPO_URL + ''' ''' + BRANCH + ''' | cut -f1)
+                        echo "Current commit: $CURRENT_COMMIT"
+
                         if [ ! -d ~/baoafrik-frontend ]; then
-                            git clone -b ${BRANCH} ${REPO_URL} ~/baoafrik-frontend
+                            git clone -b ''' + BRANCH + ''' ''' + REPO_URL + ''' ~/baoafrik-frontend
                         fi
 
-                        cd ${APP_DIR}
+                        cd ''' + APP_DIR + '''
 
                         # Store previous commit for changelog
-                        git rev-parse HEAD > /tmp/previous_commit.txt
+                        if [ -f .git/HEAD ]; then
+                            git rev-parse HEAD > /tmp/previous_commit.txt
+                        else
+                            echo "" > /tmp/previous_commit.txt
+                        fi
 
-                        git fetch origin ${BRANCH}
-                        git checkout ${BRANCH}
-                        git reset --hard origin/${BRANCH}
+                        git fetch origin ''' + BRANCH + '''
+                        git checkout ''' + BRANCH + '''
+                        git reset --hard origin/''' + BRANCH + '''
+
+                        # Store current commit for environment
+                        echo "$CURRENT_COMMIT" > /tmp/current_commit.txt
+
                         echo "Frontend repository cloned/updated successfully."
                     '
-                    """
-                }
+                    '''
 
-                // Get previous commit for changelog
-                script {
-                    String previousCommit = sh(
-                        script: "ssh -o StrictHostKeyChecking=no ${SSH_HOST} 'cat /tmp/previous_commit.txt 2>/dev/null || echo \"\"'",
-                        returnStdout: true
-                    ).trim()
-                    env.GIT_PREVIOUS_COMMIT = previousCommit
+                    // Get previous and current commits for changelog
+                    script {
+                        String previousCommit = sh(
+                            script: "ssh -o StrictHostKeyChecking=no ${SSH_HOST} 'cat /tmp/previous_commit.txt 2>/dev/null || echo \"\"'",
+                            returnStdout: true
+                        ).trim()
+                        String currentCommit = sh(
+                            script: "ssh -o StrictHostKeyChecking=no ${SSH_HOST} 'cat /tmp/current_commit.txt 2>/dev/null || echo \"\"'",
+                            returnStdout: true
+                        ).trim()
+                        env.GIT_PREVIOUS_COMMIT = previousCommit
+                        env.GIT_COMMIT = currentCommit
+                    }
                 }
             }
         }
