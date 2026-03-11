@@ -6,7 +6,7 @@ pipeline {
         NODE_ENV = 'staging'
         SSH_KEY_ID = 'baoafrik-key'
         SSH_HOST = 'ashprincepageo@34.51.184.74'
-        APP_DIR = '~/baoafrik-frontend'
+        APP_DIR = '$HOME/baoafrik-frontend'
         APP_NAME = 'frontend'
         REPO_URL = 'git@github.com:Bao-Technologies-and-Travels/baoafrik-frontend.git'
         BRANCH = 'staging'
@@ -90,7 +90,7 @@ pipeline {
                         cd ''' + APP_DIR + '''
 
                         # Store previous commit for changelog
-                        if [ -f .git/HEAD ]; then
+                        if [ -d .git ]; then
                             git rev-parse HEAD > /tmp/previous_commit.txt
                         else
                             echo "" > /tmp/previous_commit.txt
@@ -317,7 +317,7 @@ void generateAndSendReleaseNotes() {
                                 ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
                                     cd ''' + APP_DIR + '''
                                     echo "Getting commits between ''' + env.GIT_PREVIOUS_COMMIT + ''' and ''' + env.GIT_COMMIT + '''"
-                                    git log --pretty=format:"• %s (%h) - %an" ''' + env.GIT_PREVIOUS_COMMIT + '''..''' + env.GIT_COMMIT + ''' 2>/dev/null || echo ""
+                                    git log --no-merges --pretty=format:"• %s (%h) - %an" ''' + env.GIT_PREVIOUS_COMMIT + '''..''' + env.GIT_COMMIT + ''' 2>/dev/null | grep -v "Merge pull request #" || echo ""
                                 '
                             ''',
                             returnStdout: true
@@ -338,8 +338,8 @@ void generateAndSendReleaseNotes() {
                         script: '''
                             ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
                                 cd ''' + APP_DIR + '''
-                                echo "Getting last 10 commits from repository"
-                                git log --pretty=format:"• %s (%h) - %an" -10 2>/dev/null || echo "Unable to generate release notes"
+                                echo "Failed to get last commits from repository, getting last 10 commits from repository"
+                                git log --no-merges --pretty=format:"• %s (%h) - %an" -10 2>/dev/null | grep -v "Merge pull request #" || echo "Unable to generate release notes"
                             '
                         ''',
                         returnStdout: true
