@@ -15,6 +15,7 @@ pipeline {
         EMAIL = 'pageo.fonsah@baotechnologiesandtravels.com'
         BAOTECHNOLOGIES_DEV_TEAM = 'wendy.tembong@baotechnologiesandtravels.com,esther.eyere@baotechnologiesandtravels.com,toni.ebong@baotechnologiesandtravels.com,glory.tama@baotechnologiesandtravels.com,lionel.ngansop@baotechnologiesandtravels.com,arrey.johnson@baotechnologiesandtravels.com'
         SLACK_CHANNEL = '#production-deploy-release-notes'
+        LAST_COMMIT_FILE = '$HOME/last_deployed_commit_frontend_prod.txt'
         GIT_PREVIOUS_COMMIT = ''
         GIT_COMMIT = ''
     }
@@ -99,9 +100,9 @@ pipeline {
 
                         cd ''' + APP_DIR + '''
 
-                        # Store previous commit for changelog
-                        if [ -d .git ]; then
-                            git rev-parse HEAD > /tmp/previous_commit_frontend_prod.txt
+                        # Store previous commit for changelog from last deployed file
+                        if [ -f ~/last_deployed_commit_frontend_prod.txt ]; then
+                            cat ~/last_deployed_commit_frontend_prod.txt > /tmp/previous_commit_frontend_prod.txt
                         else
                             echo "" > /tmp/previous_commit_frontend_prod.txt
                         fi
@@ -258,6 +259,15 @@ EOF
 
                 // Send Slack notification with release notes
                 generateAndSendReleaseNotes()
+
+                // Update last deployed commit
+                sshagent([env.SSH_KEY_ID]) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                        echo "${GIT_COMMIT}" > ~/last_deployed_commit_frontend_prod.txt
+                    '
+                    """
+                }
             }
         }
     }
