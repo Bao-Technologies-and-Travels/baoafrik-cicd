@@ -1,4 +1,4 @@
-/* groovylint-disable CompileStatic, DuplicateMapLiteral, DuplicateStringLiteral, LineLength, NestedBlockDepth */
+/* groovylint-disable CompileStatic, DuplicateMapLiteral, DuplicateStringLiteral, LineLength, MethodSize, NestedBlockDepth, NglParseError */
 pipeline {
     agent any
 
@@ -341,8 +341,46 @@ void sendSlackNotification(Map args) {
 void generateAndSendReleaseNotes() {
     try {
         String releaseNotes = ''
+        String previousCommit = env.GIT_PREVIOUS_COMMIT?.trim()
+        String currentCommit = env.GIT_COMMIT?.trim()
+        String lastCommitFile = env.LAST_COMMIT_FILE ?: "${env.HOME}/last_deployed_commit.txt"
 
-        echo '=== Release Notes Debug Info ==='
+        echo '=== Release Notes Debug Info (initial) ==='
+        echo "GIT_PREVIOUS_COMMIT: ${previousCommit}"
+        echo "GIT_COMMIT: ${currentCommit}"
+
+        sshagent([env.SSH_KEY_ID]) {
+            if (!previousCommit) {
+                try {
+                    String fetchCmd = "if [ -f '${lastCommitFile}' ]; then cat '${lastCommitFile}'; fi"
+                    previousCommit = sh(
+                        script: "ssh -o StrictHostKeyChecking=no ${SSH_HOST} '${fetchCmd}'",
+                        returnStdout: true
+                    ).trim()
+                    echo "Resolved previous commit from file: ${previousCommit ?: '<empty>'}"
+                } catch (groovy.lang.GroovyRuntimeException e) {
+                    echo "Failed to resolve previous commit from file: ${e.message}"
+                }
+            }
+
+            if (!currentCommit) {
+                try {
+                    String revParseCmd = "cd ${APP_DIR} && git rev-parse HEAD 2>/dev/null"
+                    currentCommit = sh(
+                        script: "ssh -o StrictHostKeyChecking=no ${SSH_HOST} '${revParseCmd}'",
+                        returnStdout: true
+                    ).trim()
+                    echo "Resolved current commit from git rev-parse: ${currentCommit ?: '<empty>'}"
+                } catch (groovy.lang.GroovyRuntimeException e) {
+                    echo "Failed to resolve current commit from git: ${e.message}"
+                }
+            }
+        }
+
+        env.GIT_PREVIOUS_COMMIT = previousCommit ?: ''
+        env.GIT_COMMIT = currentCommit ?: ''
+
+        echo '=== Release Notes Debug Info (resolved) ==='
         echo "GIT_PREVIOUS_COMMIT: ${env.GIT_PREVIOUS_COMMIT}"
         echo "GIT_COMMIT: ${env.GIT_COMMIT}"
         echo "Previous commit exists: ${env.GIT_PREVIOUS_COMMIT != null && env.GIT_PREVIOUS_COMMIT != ''}"
@@ -350,14 +388,14 @@ void generateAndSendReleaseNotes() {
         echo "Commits are different: ${env.GIT_PREVIOUS_COMMIT != env.GIT_COMMIT}"
 
         // If we have previous and current commits, generate changelog
-        if (env.GIT_PREVIOUS_COMMIT && env.GIT_COMMIT && env.GIT_PREVIOUS_COMMIT != env.GIT_COMMIT) {
+        if (previousCommit && currentCommit && previousCommit != currentCommit) {
             echo '=== Attempting Git Changelog Plugin ==='
             // Try to use Git Changelog plugin if available
             try {
                 step([
                     $class: 'GitChangelog',
-                    from: [type: 'COMMIT', value: env.GIT_PREVIOUS_COMMIT],
-                    to: [type: 'COMMIT', value: env.GIT_COMMIT],
+                    from: [type: 'COMMIT', value: previousCommit],
+                    to: [type: 'COMMIT', value: currentCommit],
                     format: 'PLAIN',
                     outputFile: 'changelog.txt'
                 ])
@@ -374,8 +412,8 @@ void generateAndSendReleaseNotes() {
                             script: '''
                                 ssh -o StrictHostKeyChecking=no ''' + SSH_HOST + ''' '
                                     cd ''' + APP_DIR + '''
-                                    echo "Getting commits between ''' + env.GIT_PREVIOUS_COMMIT + ''' and ''' + env.GIT_COMMIT + '''"
-                                    git log --no-merges --pretty=format:"• %s (%h) - %an" ''' + env.GIT_PREVIOUS_COMMIT + '''..''' + env.GIT_COMMIT + ''' 2>/dev/null | grep -v "Merge pull request #" || echo ""
+                                    echo "Getting commits between ''' + previousCommit + ''' and ''' + currentCommit + '''"
+                                    git log --no-merges --pretty=format:"• %s (%h) - %an" ''' + previousCommit + '''..''' + currentCommit + ''' 2>/dev/null | grep -v "Merge pull request #" || echo ""
                                 '
                             ''',
                             returnStdout: true
