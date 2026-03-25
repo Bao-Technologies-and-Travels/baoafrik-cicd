@@ -251,12 +251,16 @@ EOF
                 generateAndSendReleaseNotes()
 
                 // Update last deployed commit
-                sshagent([env.SSH_KEY_ID]) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
-                        echo "${GIT_COMMIT}" > ${LAST_COMMIT_FILE}
-                    '
-                    """
+                if (env.GIT_COMMIT && env.GIT_COMMIT.trim()) {
+                    sshagent([env.SSH_KEY_ID]) {
+                        sh """
+                        ssh -o StrictHostKeyChecking=no ${SSH_HOST} '
+                            echo "${env.GIT_COMMIT}" > ${LAST_COMMIT_FILE}
+                        '
+                        """
+                    }
+                } else {
+                    echo 'GIT_COMMIT is empty, skipping last deployed commit update'
                 }
             }
         }
