@@ -5,13 +5,18 @@ resource "google_sql_database_instance" "postgres" {
 
   depends_on = [google_service_networking_connection.private_vpc_connection]
   settings {
-    tier      = var.tier
-    edition   = var.edition
-    disk_size = var.disk_size
+    tier              = var.tier
+    edition           = var.edition
+    disk_size         = var.disk_size
+    activation_policy = "ALWAYS"
 
     database_flags {
       name  = "cloudsql.iam_authentication"
       value = "on"
+    }
+
+    final_backup_config {
+      enabled = false
     }
 
     ip_configuration {
@@ -21,7 +26,7 @@ resource "google_sql_database_instance" "postgres" {
       // Allow connections from the staging instance public IP
       authorized_networks {
         name  = "Connect staging server"
-        value = "34.51.243.86/32"
+        value = "34.51.248.43/32"
       }
 
       authorized_networks {
@@ -50,6 +55,9 @@ resource "google_compute_global_address" "private_ip_address" {
   address_type  = "INTERNAL"
   prefix_length = 16
   network       = var.private_network
+  labels = {
+    "goog-terraform-provisioned" = "true"
+  }
 }
 
 # Enable Service Networking API

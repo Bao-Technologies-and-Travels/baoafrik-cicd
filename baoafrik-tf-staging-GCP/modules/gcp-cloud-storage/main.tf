@@ -24,7 +24,7 @@ resource "google_storage_bucket" "dev" {
       "http://localhost:3000",
       "http://localhost:3001"
     ]
-    method          = ["GET", "PUT", "POST", "DELETE", "HEAD", "OPTIONS"]
+    method          = ["GET", "HEAD", "PUT", "POST", "DELETE", "OPTIONS"]
     response_header = ["Content-Type", "Content-MD5", "Content-Disposition", "ETag", "x-goog-request-id", "x-goog-content-length-range"]
     max_age_seconds = 3600
   }
