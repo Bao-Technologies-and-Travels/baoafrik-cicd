@@ -4,8 +4,8 @@ resource "google_compute_instance" "prod" {
 
   boot_disk {
     initialize_params {
-      image = "ubuntu-os-cloud/ubuntu-2204-lts"
-      size  = 20
+      image = "ubuntu-os-cloud/ubuntu-2204-jammy-v20251218"
+      size  = 30
       type  = "pd-balanced"
     }
   }
@@ -21,4 +21,12 @@ resource "google_compute_instance" "prod" {
     scopes = ["https://www.googleapis.com/auth/cloud-platform"]
   }
 
+  tags = ["allow-egress", "baoafrik-backend-vm", "http-server", "https-server"]
+
+  lifecycle {
+    ignore_changes = [
+      network_interface[0].access_config[0].nat_ip,
+      metadata,
+    ]
+  }
 }

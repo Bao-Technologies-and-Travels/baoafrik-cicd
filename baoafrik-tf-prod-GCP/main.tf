@@ -37,11 +37,12 @@ module "cloudsql" {
 }
 
 module "storage" {
-  source           = "./modules/gcp-cloud-storage"
-  project          = var.project
-  prod_bucket_name = var.prod_bucket_name
-  prod_domain      = var.prod_domain
-  region           = var.region
+  source                = "./modules/gcp-cloud-storage"
+  project               = var.project
+  prod_bucket_name      = var.prod_bucket_name
+  prod_domain           = var.prod_domain
+  region                = var.region
+  service_account_email = module.iam.app_service_account_email
 }
 
 module "dns" {

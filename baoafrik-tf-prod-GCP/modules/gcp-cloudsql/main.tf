@@ -5,17 +5,33 @@ resource "google_sql_database_instance" "postgres" {
 
   depends_on = [google_service_networking_connection.private_vpc_connection]
   settings {
-    tier      = var.tier
-    edition   = var.edition
-    disk_size = var.disk_size
+    tier              = var.tier
+    edition           = var.edition
+    disk_size         = var.disk_size
+    activation_policy = "ALWAYS"
+
+    database_flags {
+      name  = "cloudsql.iam_authentication"
+      value = "on"
+    }
+
+    final_backup_config {
+      enabled = false
+    }
 
     ip_configuration {
       ipv4_enabled    = true
       private_network = var.private_network
+
+      // Allow connections from the prod instance public IP
+      authorized_networks {
+        name  = "Connect prod server"
+        value = "34.51.183.105/32"
+      }
     }
   }
 
-  deletion_protection = false
+  deletion_protection = true
 }
 
 resource "google_sql_database" "app_db" {
@@ -35,6 +51,9 @@ resource "google_compute_global_address" "private_ip_address" {
   address_type  = "INTERNAL"
   prefix_length = 16
   network       = var.private_network
+  labels = {
+    "goog-terraform-provisioned" = "true"
+  }
 }
 
 # Enable Service Networking API
