@@ -17,3 +17,13 @@ variable "subnet_self_link" {
 variable "service_account_email" {
   type = string
 }
+
+variable "blog_machine_type" {
+  type    = string
+  default = "e2-micro"
+}
+
+variable "blog_disk_size" {
+  type    = number
+  default = 10
+}

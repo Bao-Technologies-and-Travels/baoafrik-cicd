@@ -367,7 +367,6 @@ void sendSlackNotification(Map args) {
 // Helper function to generate and send release notes
 void generateAndSendReleaseNotes() {
     try {
-        final int SUCCESS_EXIT_CODE = 0
         String releaseNotes = ''
         String previousCommit = env.GIT_PREVIOUS_COMMIT?.trim()
         String currentCommit = env.GIT_COMMIT?.trim()
@@ -380,32 +379,28 @@ void generateAndSendReleaseNotes() {
         sshagent([env.SSH_KEY_ID]) {
             if (!previousCommit) {
                 String fetchCmd = "if [ -f '${lastCommitFile}' ]; then cat '${lastCommitFile}'; fi"
-                Map result = sh(
-                    script: "ssh -o StrictHostKeyChecking=no ${SSH_HOST} '${fetchCmd}'",
-                    returnStdout: true,
-                    returnStatus: true
-                )
-                if (result.exitcode == SUCCESS_EXIT_CODE) {
-                    previousCommit = result.stdout.trim()
+                try {
+                    previousCommit = sh(
+                        script: "ssh -o StrictHostKeyChecking=no ${SSH_HOST} '${fetchCmd} 2>/dev/null || true'",
+                        returnStdout: true
+                    ).trim()
                     echo "Resolved previous commit from file: ${previousCommit ?: '<empty>'}"
-                } else {
-                    echo "Failed to resolve previous commit from file: exit code ${result.exitcode}"
+                } catch (groovy.lang.GroovyRuntimeException ex) {
+                    echo "Failed to resolve previous commit from file: ${ex.message}"
                     previousCommit = ''
                 }
             }
 
             if (!currentCommit) {
-                String revParseCmd = "cd ${APP_DIR} && git rev-parse HEAD"
-                Map result = sh(
-                    script: "ssh -o StrictHostKeyChecking=no ${SSH_HOST} '${revParseCmd}'",
-                    returnStdout: true,
-                    returnStatus: true
-                )
-                if (result.exitcode == SUCCESS_EXIT_CODE) {
-                    currentCommit = result.stdout.trim()
+                String revParseCmd = "cd ${APP_DIR} && git rev-parse HEAD 2>/dev/null || true"
+                try {
+                    currentCommit = sh(
+                        script: "ssh -o StrictHostKeyChecking=no ${SSH_HOST} '${revParseCmd}'",
+                        returnStdout: true
+                    ).trim()
                     echo "Resolved current commit from git rev-parse: ${currentCommit ?: '<empty>'}"
-                } else {
-                    echo "Failed to resolve current commit from git: exit code ${result.exitcode}, stdout: ${result.stdout}"
+                } catch (groovy.lang.GroovyRuntimeException ex) {
+                    echo "Failed to resolve current commit from git: ${ex.message}"
                     currentCommit = ''
                 }
             }
@@ -481,7 +476,7 @@ void generateAndSendReleaseNotes() {
                 }
             }
         }
-        if (releaseNotes.empty) {
+        if (!releaseNotes?.trim()) {
             releaseNotes = 'No new changes detected in this deployment.'
         }
 

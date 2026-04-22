@@ -13,6 +13,14 @@ resource "google_dns_record_set" "staging" {
   rrdatas      = [var.staging_ip_address]
 }
 
+resource "google_dns_record_set" "blog" {
+  name         = "blog.${var.staging_domain}."
+  type         = "A"
+  ttl          = 300
+  managed_zone = google_dns_managed_zone.prod.name
+  rrdatas      = [var.blog_ip_address]
+}
+
 # Note: jenkins record already exists in GCP, commenting out to avoid trying to recreate it
 # resource "google_dns_record_set" "jenkins" {
 #   name         = "jenkins.${var.staging_domain}."

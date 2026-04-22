@@ -7,7 +7,7 @@ module "vpc" {
   public_subnet_cidr  = var.public_subnet_cidr
   private_subnet_cidr = var.private_subnet_cidr
   region              = var.region
-  server_private_ip = module.compute_staging.private_ip
+  server_private_ip   = module.compute_staging.private_ip
 }
 
 module "iam" {
@@ -25,6 +25,8 @@ module "compute_staging" {
   network_self_link     = module.vpc.network_self_link
   subnet_self_link      = module.vpc.public_subnet_self_link
   service_account_email = module.iam.app_service_account_email
+  blog_machine_type     = var.blog_instance_type
+  blog_disk_size        = var.blog_disk_size
 }
 
 module "cloudsql" {
@@ -39,12 +41,12 @@ module "cloudsql" {
 }
 
 module "storage" {
-  source              = "./modules/gcp-cloud-storage"
-  project             = var.project
-  staging_bucket_name = var.staging_bucket_name
-  dev_bucket_name     = var.dev_bucket_name
-  prod_domain         = var.prod_domain
-  region              = var.region
+  source                = "./modules/gcp-cloud-storage"
+  project               = var.project
+  staging_bucket_name   = var.staging_bucket_name
+  dev_bucket_name       = var.dev_bucket_name
+  prod_domain           = var.prod_domain
+  region                = var.region
   service_account_email = module.iam.app_service_account_email
 }
 
@@ -56,4 +58,5 @@ module "dns" {
 
   staging_ip_address = module.compute_staging.external_ip
   jenkins_ip_address = module.compute_staging.external_ip
+  blog_ip_address    = module.compute_staging.blog_external_ip
 }
