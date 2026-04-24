@@ -11,7 +11,7 @@ module "vpc" {
 
 module "iam" {
   source      = "./modules/gcp-iam"
-  project     = var.project
+  project_id  = var.project_id
   prod_bucket = var.prod_bucket_name
   network     = module.vpc.network_self_link
 }
@@ -23,6 +23,8 @@ module "compute_prod" {
   network_self_link     = module.vpc.network_self_link
   subnet_self_link      = module.vpc.public_subnet_self_link
   service_account_email = module.iam.app_service_account_email
+  blog_machine_type     = var.blog_instance_type
+  blog_disk_size        = var.blog_disk_size
 }
 
 module "cloudsql" {
@@ -51,5 +53,6 @@ module "dns" {
 
   prod_ip_address    = module.compute_prod.external_ip
   jenkins_ip_address = module.compute_prod.external_ip
-  staging_project = var.staging_project
+  blog_ip_address    = module.compute_prod.blog_external_ip
+  staging_project    = var.staging_project
 }

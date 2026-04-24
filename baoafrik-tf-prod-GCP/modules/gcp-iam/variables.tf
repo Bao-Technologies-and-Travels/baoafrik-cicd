@@ -1,5 +1,6 @@
-variable "project" {
-  type = string
+variable "project_id" {
+  description = "GCP project ID"
+  type        = string
 }
 
 variable "prod_bucket" {

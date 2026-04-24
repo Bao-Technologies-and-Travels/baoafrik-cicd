@@ -10,6 +10,10 @@ variable "jenkins_ip_address" {
   type = string
 }
 
+variable "blog_ip_address" {
+  type = string
+}
+
 variable "staging_project" {
   type = string
 }

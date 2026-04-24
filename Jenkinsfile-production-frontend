@@ -5,7 +5,7 @@ pipeline {
     environment {
         NODE_ENV = 'production'
         SSH_KEY_ID = 'baoafrik-key'
-        SSH_HOST = 'ashprincepageo@34.51.183.105'
+        SSH_HOST = 'ashprincepageo@34.51.194.203'
         APP_DIR = '$HOME/baoafrik-frontend'
         APP_NAME = 'frontend'
         REPO_URL = 'git@github.com:Bao-Technologies-and-Travels/baoafrik-frontend.git'

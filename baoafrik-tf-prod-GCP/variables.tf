@@ -43,6 +43,18 @@ variable "instance_type" {
   type        = string
 }
 
+variable "blog_instance_type" {
+  description = "Blog Instance Type"
+  type        = string
+  default     = "e2-micro"
+}
+
+variable "blog_disk_size" {
+  description = "Blog Disk Size in GB"
+  type        = number
+  default     = 10
+}
+
 variable "db_name" {
   type = string
 }
