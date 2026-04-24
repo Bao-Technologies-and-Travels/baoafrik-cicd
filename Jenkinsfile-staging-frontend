@@ -159,6 +159,8 @@ STORAGE_ATTACHMENTS_PREFIX=chat-attachments
 STORAGE_PRODUCT_PREFIX=product-images
 APP_ENCRYPTION_KEY="${APP_ENCRYPTION_KEY}"
 DB_ENCRYPTION_KEY="${DB_ENCRYPTION_KEY}"
+
+REACT_APP_BLOG_API_URL="https://blog.${DOMAIN}/wp-json/wp/v2"
 EOF
 
                             chmod 600 .env
