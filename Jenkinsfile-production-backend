@@ -14,7 +14,7 @@ pipeline {
         DOMAIN = 'baoafrik.com'
         EMAIL = 'pageo.fonsah@baotechnologiesandtravels.com'
         BAOTECHNOLOGIES_DEV_TEAM = 'wendy.tembong@baotechnologiesandtravels.com,esther.eyere@baotechnologiesandtravels.com,toni.ebong@baotechnologiesandtravels.com,lionel.ngansop@baotechnologiesandtravels.com,arrey.johnson@baotechnologiesandtravels.com'
-        SLACK_CHANNEL = '#production-deploy-release-notes'
+        SLACK_CHANNEL = '#prod-deploy-release-notes'
         LAST_COMMIT_FILE = '$HOME/last_deployed_commit_backend_prod.txt'
         GIT_PREVIOUS_COMMIT = ''
         GIT_COMMIT = ''
