@@ -40,3 +40,11 @@ resource "google_dns_record_set" "caa" {
     "0 issue \"letsencrypt.org\"",
   ]
 }
+
+resource "google_dns_record_set" "admin" {
+  name         = "admin.${var.prod_domain}."
+  type         = "A"
+  ttl          = 300
+  managed_zone = data.google_dns_managed_zone.prod.name
+  rrdatas      = [var.prod_ip_address]
+}

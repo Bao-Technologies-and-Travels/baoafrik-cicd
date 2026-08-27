@@ -155,6 +155,15 @@ pipeline {
                     string(credentialsId: 'app_encryption_key',  variable: 'APP_ENCRYPTION_KEY'),
                     string(credentialsId: 'db_encryption_key',  variable: 'DB_ENCRYPTION_KEY'),
                     string(credentialsId: 'contact_support_to',  variable: 'CONTACT_SUPPORT_TO'),
+                    string(credentialsId: 'mtarget_username', variable: 'MTARGET_USERNAME'),
+                    string(credentialsId: 'mtarget_password', variable: 'MTARGET_PASSWORD'),
+                    string(credentialsId: 'mtarget_sender', variable: 'MTARGET_SENDER'),
+                    string(credentialsId: 'mtarget_api_url', variable: 'MTARGET_API_URL'),
+                    string(credentialsId: 'gemini_api_key', variable: 'GEMINI_API_KEY'),
+                    string(credentialsId: 'two_factor_encryption_key', variable: 'TWO_FACTOR_ENCRYPTION_KEY'),
+                    string(credentialsId: 'admin_jwt_secret', variable: 'ADMIN_JWT_SECRET'),
+                    string(credentialsId: 'admin_jwt_refresh_secret', variable: 'ADMIN_JWT_REFRESH_SECRET'),
+                    string(credentialsId: 'admin_subdomain', variable: 'ADMIN_SUBDOMAIN'),
                 ]) {
                     sshagent([env.SSH_KEY_ID]) {
                         sh """
@@ -225,6 +234,26 @@ WEEKLY_REPORT_INCLUDE_DAILY="true"
 
 REPORTS_DIR="./reports"
 REPORTS_RETENTION_DAYS="30"
+
+REMINDER_INTERVAL_MINUTES=10
+MAX_REMINDERS_PER_MESSAGE=1
+
+TWO_FACTOR_ENCRYPTION_KEY="${TWO_FACTOR_ENCRYPTION_KEY}"
+TWO_FACTOR_ISSUER="Google"
+
+ADMIN_JWT_SECRET="${ADMIN_JWT_SECRET}"
+ADMIN_JWT_REFRESH_SECRET="${ADMIN_JWT_REFRESH_SECRET}"
+ADMIN_JWT_EXPIRE_TIME="15m"
+ADMIN_JWT_REFRESH_EXPIRE_TIME="7d"
+ADMIN_SUBDOMAIN="${ADMIN_SUBDOMAIN}"
+
+GEMINI_API_KEY="${GEMINI_API_KEY}"
+
+SMS_PROVIDER=mtarget
+MTARGET_USERNAME="${MTARGET_USERNAME}"
+MTARGET_PASSWORD="${MTARGET_PASSWORD}"
+MTARGET_SENDER="${MTARGET_SENDER}"
+MTARGET_API_URL="${MTARGET_API_URL}"
 EOF
 
                             chmod 600 .env

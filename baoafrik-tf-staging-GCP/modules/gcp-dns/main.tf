@@ -57,3 +57,11 @@ resource "google_dns_record_set" "caa" {
 #   managed_zone = data.google_dns_managed_zone.prod.name
 # rrdatas      = ["staging.${var.prod_domain}."]
 # }
+
+resource "google_dns_record_set" "admin" {
+  name         = "admin.${var.staging_domain}."
+  type         = "A"
+  ttl          = 300
+  managed_zone = data.google_dns_managed_zone.prod.name
+  rrdatas      = [var.staging_ip_address]
+}
