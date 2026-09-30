@@ -26,7 +26,7 @@ resource "google_sql_database_instance" "postgres" {
       // Allow connections from the staging instance public IP
       authorized_networks {
         name  = "Connect staging server"
-        value = "34.51.248.43/32"
+        value = "34.51.184.74/32"
       }
 
       authorized_networks {

@@ -10,7 +10,7 @@ resource "google_storage_bucket" "staging" {
     ]
     method          = ["GET", "PUT", "POST", "DELETE", "HEAD", "OPTIONS"]
     response_header = ["Content-Type", "Content-MD5", "Content-Disposition", "ETag", "x-goog-request-id"]
-    max_age_seconds = 3000
+    max_age_seconds = 3600
   }
 }
 

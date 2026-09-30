@@ -29,16 +29,17 @@ module "compute_staging" {
   blog_disk_size        = var.blog_disk_size
 }
 
-module "cloudsql" {
-  source          = "./modules/gcp-cloudsql"
-  project         = var.project
-  project_id      = var.project_id
-  db_name         = var.db_name
-  db_username     = var.db_username
-  db_password     = var.db_password
-  private_network = module.vpc.network_self_link
-  region          = var.region
-}
+# Cloud SQL decommissioned — instance deleted manually; DB runs on the staging VM.
+# module "cloudsql" {
+#   source          = "./modules/gcp-cloudsql"
+#   project         = var.project
+#   project_id      = var.project_id
+#   db_name         = var.db_name
+#   db_username     = var.db_username
+#   db_password     = var.db_password
+#   private_network = module.vpc.network_self_link
+#   region          = var.region
+# }
 
 module "storage" {
   source                = "./modules/gcp-cloud-storage"
