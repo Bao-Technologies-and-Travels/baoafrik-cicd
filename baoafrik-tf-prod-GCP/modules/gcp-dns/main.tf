@@ -43,6 +43,7 @@ resource "google_dns_record_set" "caa" {
 
 resource "google_dns_record_set" "admin" {
   name         = "admin.${var.prod_domain}."
+  project      = var.staging_project
   type         = "A"
   ttl          = 300
   managed_zone = data.google_dns_managed_zone.prod.name
