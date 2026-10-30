@@ -10,6 +10,7 @@ pipeline {
 
     parameters {
         booleanParam(name: 'SETUP_SERVER', defaultValue: false, description: 'Run the one-time server bootstrap (apt, Node.js, pm2, nginx, certbot, postgres). Leave unchecked for regular deploys.')
+        booleanParam(name: 'PRISMA_SIGN_DB', defaultValue: false, description: 'One-time Prisma 8 adoption: sign the existing database against the current contract. Tick only on the cutover deploy, then leave unchecked.')
     }
 
     environment {
@@ -282,10 +283,39 @@ EOF
                             npm install
                         fi
 
-                        npx prisma generate
-                        npx prisma migrate deploy
+                        # Prisma 8 preflight
+                        if [ ! -f prisma.config.ts ]; then
+                            echo "ERROR: prisma.config.ts not found - this app is not on Prisma 8 yet."
+                            exit 1
+                        fi
+                        if ! grep -q "^DATABASE_URL=" .env; then
+                            echo "ERROR: DATABASE_URL is missing from .env"
+                            exit 1
+                        fi
 
+                        # Prisma 8: emit contract.json / contract.d.ts (offline, required before build)
+                        npx prisma contract emit
+
+                        # Side-by-side migration only: keep the legacy Prisma 7 client generated
+                        if grep -q "@prisma/prisma7" package.json; then
+                            npx prisma7 generate
+                        fi
+
+                        # Build before migrating: a failed build must never touch the database
                         npm run build
+
+                        # One-time adoption of the existing database (Prisma 7 -> 8 cutover only)
+                        if [ "${params.PRISMA_SIGN_DB}" = "true" ]; then
+                            npx prisma db sign
+                        fi
+
+                        # Production audit trail (read-only, never fails the deploy)
+                        npx prisma migration status || true
+                        npx prisma db migrate --show || true
+
+                        # Apply checked-in migrations, advance the ref, then fail on any drift
+                        npx prisma db migrate --advance-ref db
+                        npx prisma db verify
 
                         pm2 reload ${APP_NAME} --update-env || (pm2 delete ${APP_NAME} || true; pm2 start dist/server.js --name ${APP_NAME} -- --port 3001)
                         pm2 save
